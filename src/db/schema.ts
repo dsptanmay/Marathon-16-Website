@@ -2,7 +2,7 @@ import { pgTable, serial, text, boolean, timestamp } from "drizzle-orm/pg-core";
 
 
 export const master = pgTable("master", {
-  id: serial("id").primaryKey(), // Auto-incrementing ID
+  id: serial("id").primaryKey(), 
   unique_code: text("unique_code").notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
