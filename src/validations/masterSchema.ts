@@ -8,7 +8,7 @@ export const masterSchema = z.object({
   usn: z.string().min(1, "USN is required"),
   category: z.string().min(1, "Category is required"),
   isCrossed: z.boolean().default(false),
-  crossTime: z.date().optional(),
+  crossTime: z.date().optional(), // if null -> false else isCrossed = true
   isSitian: z.boolean().default(false),
   qrcodedata: z.string().url().optional(),
 });
