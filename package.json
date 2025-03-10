@@ -17,6 +17,7 @@
     "drizzle-orm": "^0.40.0",
     "hono": "^4.7.4",
     "lucide-react": "^0.479.0",
+    "marathon-16-website": "file:",
     "next": "15.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
