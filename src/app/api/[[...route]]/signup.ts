@@ -18,7 +18,7 @@ const registerRouter = new Hono();
 const registerHandler = async (c: any) => {
   try {
     const body = await c.req.json() as UserInput;  
-    const { unique_code, name, email, phone_no, usn, age } = body;
+    const { unique_code, name, email, phone_no, usn} = body;
 
     if (!unique_code || !name || !phone_no) {
       return c.json({ error: "Missing required fields" }, 400);
