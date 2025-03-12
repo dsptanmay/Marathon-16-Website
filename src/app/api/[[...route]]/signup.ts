@@ -26,7 +26,7 @@ const registerHandler = async (c: any) => {
 
     const userData: Partial<UserInput> = { unique_code, name, phone_no, age };
 
-    if (age) userData.email = email;
+    if (email) userData.email = email;
     if (usn) userData.usn = usn;
 
     await db.insert(master).values(userData);
