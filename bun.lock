@@ -18,7 +18,6 @@
         "hono": "^4.7.4",
         "html5-qrcode": "^2.3.8",
         "lucide-react": "^0.479.0",
-        "marathon-16-website": "file:",
         "next": "15.2.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
@@ -646,8 +645,6 @@
 
     "lucide-react": ["lucide-react@0.479.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-aBhNnveRhorBOK7uA4gDjgaf+YlHMdMhQ/3cupk6exM10hWlEU+2QtWYOfhXhjAsmdb6LeKR+NZnow4UxRRiTQ=="],
 
-    "marathon-16-website": ["marathon-16-website@file:", { "dependencies": { "@hono/zod-validator": "^0.4.3", "@neondatabase/serverless": "^0.10.4", "@radix-ui/react-slot": "^1.1.2", "@tanstack/react-query": "^5.67.2", "class-variance-authority": "^0.7.1", "clsx": "^2.1.1", "drizzle-orm": "^0.40.0", "hono": "^4.7.4", "lucide-react": "^0.479.0", "marathon-16-website": "file:", "next": "15.2.1", "react": "^19.0.0", "react-dom": "^19.0.0", "tailwind-merge": "^3.0.2", "tailwindcss-animate": "^1.0.7", "zod": "^3.24.2" }, "devDependencies": { "@eslint/eslintrc": "^3", "@tailwindcss/postcss": "^4", "@types/node": "^20", "@types/react": "^19", "@types/react-dom": "^19", "dotenv": "^16.4.7", "drizzle-kit": "^0.30.5", "eslint": "^9", "eslint-config-next": "15.2.1", "tailwindcss": "^4", "typescript": "^5" } }],
-
     "math-intrinsics": ["math-intrinsics@1.1.0", "", {}, "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="],
 
     "merge2": ["merge2@1.4.1", "", {}, "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="],
@@ -905,8 +902,6 @@
     "eslint-plugin-react/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
     "fast-glob/glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
-
-    "marathon-16-website/marathon-16-website": ["marathon-16-website@file:.", {}],
 
     "micromatch/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
 
