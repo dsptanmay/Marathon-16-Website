@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 
-// Define Zod schema (matches backend validation)
+//zod validation schema
 const signupSchema = z.object({
   unique_code: z.string().min(3, "Unique code is required"),
   name: z.string().min(3, "Name is required"),
@@ -124,7 +124,7 @@ const SignupPage = () => {
         <input
           type="number"
           {...register("age", { valueAsNumber: true })}
-          placeholder="Age"
+          placeholder="Age"                                 //age validation needed to be checked 
           className="w-full p-2 border rounded"
         />
         {errors.age && <p className="text-red-500">{errors.age.message}</p>}
