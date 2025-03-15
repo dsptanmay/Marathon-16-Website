@@ -14,4 +14,9 @@ import { masterTable } from "@/db/schema";
 //   qrcodedata: z.string().url().optional(),
 // });
 
-export const createUserSchema = createInsertSchema(masterTable);
+export const createUserSchema = createInsertSchema(masterTable).omit({
+    isCrossed: true,
+    crossTime: true,
+    isSitian: true,
+    qrcodedata: true,
+  });
