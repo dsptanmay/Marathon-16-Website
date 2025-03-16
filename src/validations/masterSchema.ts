@@ -15,8 +15,8 @@ import { masterTable } from "@/db/schema";
 // });
 
 export const createUserSchema = createInsertSchema(masterTable).omit({
-    isCrossed: true,
-    crossTime: true,
-    isSitian: true,
-    qrcodedata: true,
-  });
+  isCrossed: true,
+  crossTime: true,
+  isSitian: true,
+  // qrcodedata: true,
+});

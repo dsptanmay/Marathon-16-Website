@@ -4,59 +4,73 @@ import { masterTable } from "@/db/schema";
 import { createUserSchema } from "@/validations/masterSchema";
 import { zValidator } from "@hono/zod-validator";
 
-type UserInput = {
-  unique_code: string;
-  name: string;
-  email?: string;
-  phone_no: string;
-  usn?: string;
-};
-
-const registerHandler = async (c: any) => {
-  try {
-    const body = await c.req.valid("json");
-    const { unique_code, name, email, phone_no, usn } = body;
-
-    if (!unique_code || !name || !phone_no) {
-      return c.json({ error: "Missing required fields" }, 400);
-    }
-
-    const userData: Partial<UserInput> = { unique_code, name, phone_no };
-
-    if (email) userData.email = email;
-    if (usn) userData.usn = usn;
-
-    await db.insert(masterTable).values(userData);
-
-    return c.json({ message: "User registered successfully" });
-  } catch (error) {
-    return c.json({ error: "Something went wrong", details: error.message }, 500);
-  }
-};
+// type UserInput = {
+//   unique_code: string;
+//   name: string;
+//   email?: string;
+//   phone_no: string;
+//   usn?: string;
+// };
 
 const validationMiddleware = zValidator("json", createUserSchema);
 
 const registerRouter = new Hono()
-  .post("/girls", validationMiddleware, registerHandler)
-  .post("/boys", validationMiddleware, registerHandler)
-  .post("/walkathon", validationMiddleware, async (c:any) => {
-    try {
-      const body = await c.req.valid("json");
-      const { unique_code, name, email, phone_no} = body;
+  .post("/girls", validationMiddleware, async (c) => {
+    const body = c.req.valid("json");
 
-      if (!unique_code || !name || !phone_no) {
-        return c.json({ error: "Missing required fields" }, 400);
-      }
+    const res = await db
+      .insert(masterTable)
+      .values({
+        unique_code: body.unique_code,
+        name: body.name,
+        phone_no: body.phone_no,
+        usn: body.usn,
+        category: "girls",
+      })
+      .returning();
 
-      const userData: Partial<UserInput> = { unique_code, name, phone_no };
-      if (email) userData.email = email;
+    if (res.length === 0)
+      return c.json({ message: "Error in registering user!" }, 400);
 
-      await db.insert(masterTable).values(userData);
+    return c.json({ message: "User registered successfully" }, 201);
+  })
+  .post("/boys", validationMiddleware, async (c) => {
+    const body = c.req.valid("json");
 
-      return c.json({ message: "User registered successfully" });
-    } catch (error) {
-      return c.json({ error: "Something went wrong", details: error.message }, 500);
-    }
+    const res = await db
+      .insert(masterTable)
+      .values({
+        unique_code: body.unique_code,
+        name: body.name,
+        phone_no: body.phone_no,
+        usn: body.usn,
+        category: "boys",
+      })
+      .returning();
+
+    if (res.length === 0)
+      return c.json({ message: "Error in registering user!" }, 400);
+
+    return c.json({ message: "User registered successfully" }, 201);
+  })
+  .post("/walkathon", validationMiddleware, async (c) => {
+    const body = c.req.valid("json");
+
+    const res = await db
+      .insert(masterTable)
+      .values({
+        unique_code: body.unique_code,
+        name: body.name,
+        phone_no: body.phone_no,
+        usn: body.usn,
+        category: "walkathon",
+      })
+      .returning();
+
+    if (res.length === 0)
+      return c.json({ message: "Error in registering user!" }, 400);
+
+    return c.json({ message: "User registered successfully" }, 201);
   });
 
 export default registerRouter;

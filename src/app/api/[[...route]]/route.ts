@@ -6,8 +6,9 @@ import registerRouter from "./signup";
 const app = new Hono().basePath("/api");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routes = app.route("/users", userRouter);
-app.route("/register", registerRouter);
+const routes = app
+  .route("/users", userRouter)
+  .route("/register", registerRouter);
 
 export const GET = handle(app);
 export const POST = handle(app);
