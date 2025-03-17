@@ -1,14 +1,15 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
-import userRouter from "./users";
 import registerRouter from "./signup";
+import userRouter from "./userinfo";
 
 const app = new Hono().basePath("/api");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app
-  .route("/users", userRouter)
+  .route("/getuser", userRouter)
   .route("/register", registerRouter);
+  
 
 export const GET = handle(app);
 export const POST = handle(app);

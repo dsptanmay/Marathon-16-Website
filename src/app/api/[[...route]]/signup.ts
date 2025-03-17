@@ -36,7 +36,7 @@ const registerRouter = new Hono()
   })
   .post("/boys", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
-    cd;
+    
 
     const res = await db
       .insert(masterTable)
