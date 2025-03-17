@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
+import { useRegisterBoys } from "@/hooks/use-register-user";
 
 //zod validation schema
 const signupSchema = z.object({
@@ -25,38 +26,44 @@ const SignupPage = () => {
   const [message, setMessage] = useState("");
 
   const {
+    mutate: registerBoys,
+    status: boysStatus,
+    error: boysError,
+  } = useRegisterBoys();
+
+  const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
 
-  const category = watch("category", "girls"); // Default category
-
   const onSubmit = async (data: SignupFormData) => {
     setLoading(true);
     setMessage("");
 
-    try {
-      const response = await fetch(`/api/register/${data.category}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+    // try {
+    //   const response = await fetch(`/api/register/${data.category}`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(data),
+    //   });
 
-      const result = await response.json();
-      if (response.ok) {
-        setMessage("Registration successful!");
-      } else {
-        setMessage(result.error || "Something went wrong.");
-      }
-    } catch (error) {
-      setMessage("Failed to register. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    //   const result = await response.json();
+    //   if (response.ok) {
+    //     setMessage("Registration successful!");
+    //   } else {
+    //     setMessage(result.error || "Something went wrong.");
+    //   }
+    // } catch (error) {
+    //   setMessage("Failed to register. Please try again.");
+    // } finally {
+    //   setLoading(false);
+    // }
+    try {
+      if (data.category === "boys") registerBoys(data);
+    } catch (error) {}
   };
 
   return (
@@ -70,10 +77,7 @@ const SignupPage = () => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <select
-          {...register("category")}
-          className="w-full p-2 border rounded"
-        >
+        <select {...register("category")} className="w-full p-2 border rounded">
           <option value="girls">Girls Marathon</option>
           <option value="boys">Boys Marathon</option>
           <option value="walkathon">Walkathon</option>
@@ -124,7 +128,7 @@ const SignupPage = () => {
         <input
           type="number"
           {...register("age", { valueAsNumber: true })}
-          placeholder="Age"                                 //age validation needed to be checked 
+          placeholder="Age" //age validation needed to be checked
           className="w-full p-2 border rounded"
         />
         {errors.age && <p className="text-red-500">{errors.age.message}</p>}

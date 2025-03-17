@@ -30,12 +30,13 @@ const registerRouter = new Hono()
       .returning();
 
     if (res.length === 0)
-      return c.json({ message: "Error in registering user!" }, 400);
+      return c.json({ error: "Error in registering user!" }, 400);
 
     return c.json({ message: "User registered successfully" }, 201);
   })
   .post("/boys", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
+    cd;
 
     const res = await db
       .insert(masterTable)
@@ -49,7 +50,7 @@ const registerRouter = new Hono()
       .returning();
 
     if (res.length === 0)
-      return c.json({ message: "Error in registering user!" }, 400);
+      return c.json({ error: "Error in registering user!" }, 400);
 
     return c.json({ message: "User registered successfully" }, 201);
   })

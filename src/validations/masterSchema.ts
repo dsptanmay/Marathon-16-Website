@@ -18,5 +18,6 @@ export const createUserSchema = createInsertSchema(masterTable).omit({
   isCrossed: true,
   crossTime: true,
   isSitian: true,
+  category: true,
   // qrcodedata: true,
 });

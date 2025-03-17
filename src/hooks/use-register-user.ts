@@ -8,7 +8,7 @@ type RequestTypeBoys = InferRequestType<typeof api.register.boys.$post>["json"];
 export const useRegisterBoys = () => {
   const mutation = useMutation<ResponseTypeBoys, Error, RequestTypeBoys>({
     mutationFn: async (data) => {
-      const response = await api.register.boys.$post({ json: data });
+      const response = await api.register.boys.$post({ json: data }); // POST call -> /api/register/boys/
       if (!response.ok) throw new Error("Failed to register participant");
       return await response.json();
     },
@@ -22,6 +22,10 @@ export const useRegisterBoys = () => {
   });
   return mutation;
 };
+
+// 1. mutationFn -> if successful -> onSuccess else onError
+
+// TODO: write custom hooks for registering girls and walkathon members
 
 export const useRegisterGirls = () => {};
 export const useRegisterWalkathon = () => {};
