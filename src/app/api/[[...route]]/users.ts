@@ -1,6 +1,6 @@
-import { Hono } from "hono";
+//import { Hono } from "hono";
 
-const userRouter = new Hono()
+/**const userRouter = new Hono()
   .get("/", async (c) => {
     return c.json({ pathfinder: "there" });
   })
@@ -12,4 +12,4 @@ const userRouter = new Hono()
 // /api/xyz/<content> -> Param
 // /api/xyz?content=value&content2=value2&.....
 
-export default userRouter;
+export default userRouter;**/
