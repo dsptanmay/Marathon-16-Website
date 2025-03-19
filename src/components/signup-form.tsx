@@ -1,148 +1,146 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useState } from "react";
-import { useRegisterBoys } from "@/hooks/use-register-user";
+import { useMutation } from "@tanstack/react-query";
 
-//zod validation schema
-const signupSchema = z.object({
-  unique_code: z.string().min(3, "Unique code is required"),
-  name: z.string().min(3, "Name is required"),
-  email: z.string().email("Invalid email").optional(),
-  phone_no: z.string().min(10, "Phone number is required"),
-  usn: z.string().optional(),
-  age: z.number().min(1, "Age is required"),
-  category: z.enum(["girls", "boys", "walkathon"], {
-    errorMap: () => ({ message: "Select a category" }),
-  }),
-});
+interface SignupFormProps {
+  category: string;
+}
 
-type SignupFormData = z.infer<typeof signupSchema>;
-
-const SignupPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const {
-    mutate: registerBoys,
-    status: boysStatus,
-    error: boysError,
-  } = useRegisterBoys();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
+const SignupForm: React.FC<SignupFormProps> = ({ category }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    usn: "",
+    phone: "",
+    email: "",
   });
 
-  const onSubmit = async (data: SignupFormData) => {
-    setLoading(true);
-    setMessage("");
+  // Simulated API request function
+  const registerUser = async (data: typeof formData & { category: string }) => {
+    return new Promise<typeof data>((resolve) =>
+      setTimeout(() => resolve(data), 1000)
+    );
+  };
 
-    // try {
-    //   const response = await fetch(`/api/register/${data.category}`, {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(data),
-    //   });
+  // Mutation
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data) => {
+      alert(`Successfully registered for ${data.category.toUpperCase()}!`);
+    },
+    onError: (error) => {
+      alert("Registration failed. Please try again.");
+      console.error(error);
+    },
+  });
 
-    //   const result = await response.json();
-    //   if (response.ok) {
-    //     setMessage("Registration successful!");
-    //   } else {
-    //     setMessage(result.error || "Something went wrong.");
-    //   }
-    // } catch (error) {
-    //   setMessage("Failed to register. Please try again.");
-    // } finally {
-    //   setLoading(false);
-    // }
-    try {
-      if (data.category === "boys") registerBoys(data);
-    } catch (error) {}
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutation.mutate({ ...formData, category });
+  };
+
+  // Define styles based on category
+  const categoryStyles: Record<string, string> = {
+    boys: "bg-blue-100 border-blue-500 text-blue-800",
+    girls: "bg-pink-100 border-pink-500 text-pink-800",
+    walkathon: "bg-green-100 border-green-500 text-green-800",
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Marathon Sign-Up</h2>
+    <form
+      onSubmit={handleSubmit}
+      className={`p-6 border-2 rounded-lg shadow-lg w-96 space-y-4 ${
+        categoryStyles[category] || "bg-gray-100"
+      }`}
+    >
+      <h2 className="text-xl font-bold text-center">
+        Register for {category.toUpperCase()}
+      </h2>
 
-      {message && (
-        <p className="text-center text-lg font-semibold text-green-600">
-          {message}
+      {/* Name */}
+      <label className="block font-semibold">
+        Name <span className="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        name="name"
+        placeholder="Eg: John Doe"
+        value={formData.name}
+        onChange={handleChange}
+        className="border p-2 w-full rounded-md focus:ring-2 focus:ring-blue-500"
+        required
+        disabled={mutation.isPending}
+      />
+
+      {/* USN */}
+      <label className="block font-semibold">USN</label>
+      <input
+        type="text"
+        name="usn"
+        placeholder="Eg: 1SIxxYYxxx"
+        value={formData.usn}
+        onChange={handleChange}
+        className="border p-2 w-full rounded-md focus:ring-2 focus:ring-blue-500"
+        disabled={mutation.isPending}
+      />
+
+      {/* Phone Number */}
+      <label className="block font-semibold">
+        Phone Number <span className="text-red-500">*</span>
+      </label>
+      <input
+        type="tel"
+        name="phone"
+        placeholder="Eg: 9876543210"
+        value={formData.phone}
+        onChange={handleChange}
+        className="border p-2 w-full rounded-md focus:ring-2 focus:ring-gray-950"
+        required
+        disabled={mutation.isPending}
+      />
+
+      {/* Email */}
+      <label className="block font-semibold">
+        Email <span className="text-red-500">*</span>
+      </label>
+      <input
+        type="email"
+        name="email"
+        placeholder="Eg: aviral@gmail.com"
+        value={formData.email}
+        onChange={handleChange}
+        className="border p-2 w-full rounded-md focus:ring-2 focus:ring-blue-500"
+        required
+        disabled={mutation.isPending}
+      />
+
+      <button
+        type="submit"
+        className="w-full py-2 rounded-lg text-white font-bold disabled:opacity-50"
+        disabled={mutation.isPending}
+        style={{
+          backgroundColor:
+            category === "boys"
+              ? "#1E40AF"
+              : category === "girls"
+              ? "#DB2777"
+              : "#047857",
+        }}
+      >
+        {mutation.isPending ? "Registering..." : "Register"}
+      </button>
+
+      {mutation.isError && (
+        <p className="text-red-600 mt-2 text-sm">
+          Error submitting form. Try again.
         </p>
       )}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <select {...register("category")} className="w-full p-2 border rounded">
-          <option value="girls">Girls Marathon</option>
-          <option value="boys">Boys Marathon</option>
-          <option value="walkathon">Walkathon</option>
-        </select>
-        {errors.category && (
-          <p className="text-red-500">{errors.category.message}</p>
-        )}
-
-        <input
-          {...register("unique_code")}
-          placeholder="Unique Code"
-          className="w-full p-2 border rounded"
-        />
-        {errors.unique_code && (
-          <p className="text-red-500">{errors.unique_code.message}</p>
-        )}
-
-        <input
-          {...register("name")}
-          placeholder="Full Name"
-          className="w-full p-2 border rounded"
-        />
-        {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-
-        <input
-          {...register("email")}
-          type="email"
-          placeholder="Email (optional)"
-          className="w-full p-2 border rounded"
-        />
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-
-        <input
-          {...register("phone_no")}
-          placeholder="Phone Number"
-          className="w-full p-2 border rounded"
-        />
-        {errors.phone_no && (
-          <p className="text-red-500">{errors.phone_no.message}</p>
-        )}
-
-        <input
-          {...register("usn")}
-          placeholder="USN (optional)"
-          className="w-full p-2 border rounded"
-        />
-
-        <input
-          type="number"
-          {...register("age", { valueAsNumber: true })}
-          placeholder="Age" //age validation needed to be checked
-          className="w-full p-2 border rounded"
-        />
-        {errors.age && <p className="text-red-500">{errors.age.message}</p>}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-    </div>
+    </form>
   );
 };
 
-export default SignupPage;
+export default SignupForm;
