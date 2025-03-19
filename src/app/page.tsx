@@ -9,42 +9,53 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-gray-700 text-white">
-      {/* Header (Fixed at Top) */}
-      <header className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-700 text-white text-center text-lg font-bold shadow-lg">
-        Event Registration Portal
-      </header>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-500 text-white">
 
-      {/* Main Content (Centered) */}
-      <main className="flex-grow flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-4xl font-extrabold mb-8">Select Your Category</h1>
-        <div className="flex flex-col space-y-6">
-          <button
-            onClick={() => handleCategorySelect("girls")}
-            className="px-8 py-3 bg-pink-500 text-white rounded-xl shadow-lg hover:bg-pink-600 transition transform hover:scale-105 text-lg"
-          >
-            Girls
-          </button>
-          <button
-            onClick={() => handleCategorySelect("boys")}
-            className="px-8 py-3 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-600 transition transform hover:scale-105 text-lg"
-          >
-            Boys
-          </button>
-          <button
-            onClick={() => handleCategorySelect("walkathon")}
-            className="px-8 py-3 bg-green-500 text-white rounded-xl shadow-lg hover:bg-green-600 transition transform hover:scale-105 text-lg"
-          >
-            Walkathon
-          </button>
-        </div>
-      </main>
+  
+  <header className="h-24 w-full bg-gradient-to-r from-purple-900 via-indigo-700 to-blue-500 text-white font-bold shadow-xl flex items-center justify-center relative px-6">
+    <img src="/pf_logo.png" alt="Marathon-16 Logo" className="h-12 absolute left-6 drop-shadow-lg" />
+    <span className="hidden sm:block text-center tracking-wide text-xl md:text-2xl">
+      🏆 Marathon-16 | Run for Glory!
+    </span>
+  </header>
 
-      {/* Footer (Fixed at Bottom) */}
-      <footer className="w-full py-4 bg-gray-800 text-white text-center text-sm">
-        © 2025 Event Registration | All Rights Reserved
-      </footer>
+  
+  <main className="flex-grow flex flex-col items-center justify-center text-center px-6">
+    <h1 className="text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-orange-500">
+      Ready to Make History? 🏃‍♂️🔥
+    </h1>
+    <p className="text-lg text-blue-100 mb-8 max-w-lg">
+      Lace up your shoes and **own the track!**
+      Choose your category & get ready for the ultimate challenge!
+    </p>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-lg">
+      <button
+        onClick={() => handleCategorySelect("girls")}
+        className="px-6 py-4 bg-pink-500 text-white rounded-xl shadow-xl hover:bg-pink-600 transition-all transform hover:scale-105 text-lg font-semibold"
+      >
+        👧 Girls Category
+      </button>
+      <button
+        onClick={() => handleCategorySelect("boys")}
+        className="px-6 py-4 bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 transition-all transform hover:scale-105 text-lg font-semibold"
+      >
+        👦 Boys Category
+      </button>
+      <button
+        onClick={() => handleCategorySelect("walkathon")}
+        className="px-6 py-4 bg-green-500 text-white rounded-xl shadow-xl hover:bg-green-600 transition-all transform hover:scale-105 text-lg font-semibold"
+      >
+        🚶 Walkathon
+      </button>
     </div>
+  </main>
+
+  
+  <footer className="w-full py-6 bg-purple-900 text-blue-200 text-center text-sm">
+    © 2025 Marathon-16 | Team Pathfinder
+  </footer>
+</div>
+
   );
 };
 
