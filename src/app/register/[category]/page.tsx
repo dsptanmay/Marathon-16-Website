@@ -47,9 +47,9 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-gray-700 text-white">
-      {/* Header (Fixed at Top) */}
+      
       <header className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-700 text-white text-center text-lg font-bold shadow-lg">
-        Event Registration Portal
+        Marathon-16 Registration Portal
       </header>
 
       {/* Main Content (Centered) */}
@@ -67,6 +67,7 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
             Name <span className="text-red-500">*</span>
           </label>
           <input
+            placeholder="eg: John Doe"
             type="text"
             name="name"
             value={formData.name}
@@ -79,6 +80,7 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
           {/* USN */}
           <label className="block font-semibold mb-1">USN</label>
           <input
+            placeholder="eg: 1SIXXYYXXX"
             type="text"
             name="usn"
             value={formData.usn}
@@ -93,6 +95,7 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
             Phone Number <span className="text-red-500">*</span>
           </label>
           <input
+            placeholder="eg: 9876543210"
             type="tel"
             name="phone"
             value={formData.phone}
@@ -107,6 +110,7 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
             Email <span className="text-red-500">*</span>
           </label>
           <input
+            placeholder="eg: aviral@gmail.com"
             type="email"
             name="email"
             value={formData.email}
@@ -141,9 +145,9 @@ const SignupForm = ({ params }: { params: { category: string } }) => {
         </form>
       </main>
 
-      {/* Footer (Fixed at Bottom) */}
+     
       <footer className="w-full py-4 bg-gray-800 text-white text-center text-sm">
-        © 2025 Event Registration | All Rights Reserved
+        © 2025 Marathon-16 Registration | Team Pathfinder | All Rights Reserved
       </footer>
     </div>
   );
