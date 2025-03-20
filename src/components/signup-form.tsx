@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { use } from "react";
 
-interface SignupFormProps {
-  category: string;
-}
+const SignupForm = () => {
+  const params = useParams();
+  const category = (params?.category as string) || "default";
 
-const SignupForm: React.FC<SignupFormProps> = ({ category }) => {
   const [formData, setFormData] = useState({
     name: "",
     usn: "",

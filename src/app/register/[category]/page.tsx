@@ -1,11 +1,13 @@
 "use client";
+
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
-const SignupForm = ({ params }: { params: { category: string } }) => {
+const SignupForm = () => {
   const router = useRouter();
-  const category = params.category || "default";
+  const params = useParams();
+  const category = (params.category as string) || "default"; // Get category safely
 
   const [formData, setFormData] = useState({
     name: "",
