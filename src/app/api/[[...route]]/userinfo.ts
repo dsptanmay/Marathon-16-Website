@@ -10,7 +10,7 @@ type MasterTable = InferSelectModel<typeof masterTable>;
 
 
 const getUserInfoSchema = z.object({
-  unique_code: z.string().min(1, "unique_code is required"),
+  unique_code: z.string().min(6, "unique_code is required"),
 });
 
 const userRouter = new Hono()
