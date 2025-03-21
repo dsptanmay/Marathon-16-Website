@@ -2,7 +2,6 @@
 
 import { useUserInfo } from "@/hooks/get-user"; 
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +20,7 @@ const GetCertificateComponent = () => {
   const unique_code = watch("unique_code");
   const { data: user, error, isFetching } = useUserInfo(unique_code);
 
+  // Function to generate PDF certificate
   const generateCertificatePDF = async (participantName: string) => {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([612, 792]); 
@@ -45,14 +45,20 @@ const GetCertificateComponent = () => {
       font,
     });
 
-    const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
+    return await pdfDoc.save();
   };
+
 
   const onSubmit = async () => {
     if (!user) return;
+
+    if (!user.isCrossed) {
+      alert("You are not eligible to download the certificate.");
+      return;
+    }
+
     const pdfBytes = await generateCertificatePDF(user.name);
-    
+
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -74,14 +80,19 @@ const GetCertificateComponent = () => {
             placeholder="Enter Unique Code"
           />
           {errors.unique_code && <p className="text-red-500">{errors.unique_code.message}</p>}
-          
+
           {isFetching && <p className="text-blue-500">Fetching user info...</p>}
           {error && <p className="text-red-500">User not found</p>}
-          
+
+          {/* Show error message if user exists but isCrossed is false */}
+          {user && !user.isCrossed && (
+            <p className="text-red-500">You are not eligible to download the certificate.</p>
+          )}
+
           <button
             type="submit"
             className="p-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-            disabled={!user || isFetching}
+            disabled={!user || isFetching || (user && !user.isCrossed)}
           >
             Download Certificate
           </button>
