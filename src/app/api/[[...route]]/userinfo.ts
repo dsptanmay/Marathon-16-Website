@@ -26,7 +26,7 @@ const userRouter = new Hono()
           .from(masterTable)
           .where(
             eq(masterTable.unique_code, unique_code), // Checking for matching unique_code
-            eq(masterTable.isCrossed, true) // Ensure isCrossed is true
+            eq(masterTable.isCrossed, true) // Ensuring isCrossed is true
           )
           .execute();
 
