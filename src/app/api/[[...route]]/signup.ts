@@ -4,13 +4,7 @@ import { masterTable } from "@/db/schema";
 import { createUserSchema } from "@/validations/masterSchema";
 import { zValidator } from "@hono/zod-validator";
 
-// type UserInput = {
-//   unique_code: string;
-//   name: string;
-//   email?: string;
-//   phone_no: string;
-//   usn?: string;
-// };
+
 
 const validationMiddleware = zValidator("json", createUserSchema);
 

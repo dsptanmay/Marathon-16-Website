@@ -30,7 +30,7 @@ const userRouter = new Hono().get(
             eq(masterTable.isCrossed, true) // Ensuring isCrossed is true
           )
         )
-        .execute();
+
 
       if (user.length === 0) {
         return c.json({ error: "User not found or has not crossed yet" }, 404);

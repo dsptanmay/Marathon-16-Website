@@ -5,7 +5,6 @@ import userRouter from "./userinfo";
 
 const app = new Hono().basePath("/api");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app
   .route("/user", userRouter)
   .route("/register", registerRouter);
