@@ -15,7 +15,7 @@ const getUserInfoSchema = z.object({
 });
 
 const userRouter = new Hono().get(
-  "/userinfo",
+  "/info",
   zValidator("query", getUserInfoSchema),
   async (c) => {
     const { unique_code } = c.req.valid("query");
