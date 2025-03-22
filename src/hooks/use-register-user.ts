@@ -1,16 +1,25 @@
 import { api } from "@/lib/hono";
 import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
-import { Variable } from "lucide-react";
 
 type ResponseTypeBoys = InferResponseType<typeof api.register.boys.$post, 201>;
 type RequestTypeBoys = InferRequestType<typeof api.register.boys.$post>["json"];
 
-type ResponseTypeGirls = InferResponseType<typeof api.register.girls.$post, 201>;
-type RequestTypeGirls = InferRequestType<typeof api.register.girls.$post>["json"];
+type ResponseTypeGirls = InferResponseType<
+  typeof api.register.girls.$post,
+  201
+>;
+type RequestTypeGirls = InferRequestType<
+  typeof api.register.girls.$post
+>["json"];
 
-type ResponseTypeWalkathon = InferResponseType<typeof api.register.walkathon.$post, 201>;
-type RequestTypeWalkathon = InferRequestType<typeof api.register.walkathon.$post>["json"];
+type ResponseTypeWalkathon = InferResponseType<
+  typeof api.register.walkathon.$post,
+  201
+>;
+type RequestTypeWalkathon = InferRequestType<
+  typeof api.register.walkathon.$post
+>["json"];
 
 export const useRegisterBoys = () => {
   const mutation = useMutation<ResponseTypeBoys, Error, RequestTypeBoys>({
@@ -53,7 +62,11 @@ export const useRegisterGirls = () => {
 };
 
 export const useRegisterWalkathon = () => {
-  const mutation = useMutation<ResponseTypeWalkathon, Error, RequestTypeWalkathon>({
+  const mutation = useMutation<
+    ResponseTypeWalkathon,
+    Error,
+    RequestTypeWalkathon
+  >({
     mutationFn: async (data) => {
       const response = await api.register.walkathon.$post({ json: data }); // POST call -> /api/register/walkathon/
       if (!response.ok) throw new Error("Failed to register participant");
