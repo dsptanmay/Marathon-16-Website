@@ -1,62 +1,86 @@
 "use client";
-import { useRouter } from "next/navigation";
 
-const CategoryPage = () => {
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { motion } from "framer-motion";
+
+export default function HomePage() {
   const router = useRouter();
 
-  const handleCategorySelect = (category: string) => {
-    router.push(`/register/${category}`);
-  };
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-500 text-white">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0628a3] via-[#6137bc] to-[#21114a] text-white">
+      
+      {/* Header */}
+      <header className="fixed top-0 left-0 w-full py-4 px-6 bg-black/30 flex items-center justify-between z-50">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.svg" alt="Marathon Logo" width={40} height={40} />
+          <h1 className="text-xl font-bold">Marathon Registration</h1>
+        </div>
+      </header>
 
-  
-  <header className="h-24 w-full bg-gradient-to-r from-purple-900 via-indigo-700 to-blue-500 text-white font-bold shadow-xl flex items-center justify-center relative px-6">
-    <img src="/pf_logo.png" alt="Marathon-16 Logo" className="h-12 absolute left-6 drop-shadow-lg" />
-    <span className="hidden sm:block text-center tracking-wide text-xl md:text-2xl">
-      🏆 Marathon-16 | Run for Glory!
-    </span>
-  </header>
+      {/* Main Content */}
+      <main className="text-center mt-20">
+        {/* Heading with emerging effect */}
+        <motion.h1 
+          className="text-4xl font-extrabold mb-6"
+          initial={{ opacity: 0, y: 50 }} // Starts hidden and below
+          animate={{ opacity: 1, y: 0 }} // Moves up into position
+          transition={{ duration: 0.8, ease: "easeOut" }} 
+        >
+          Select Your Category
+        </motion.h1>
 
-  
-  <main className="flex-grow flex flex-col items-center justify-center text-center px-6">
-    <h1 className="text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-orange-500">
-      Ready to Make History? 🏃‍♂️🔥
-    </h1>
-    <p className="text-lg text-blue-100 mb-8 max-w-lg">
-      Lace up your shoes and **own the track!**
-      Choose your category & get ready for the ultimate challenge!
-    </p>
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-lg">
-      <button
-        onClick={() => handleCategorySelect("girls")}
-        className="px-6 py-4 bg-pink-500 text-white rounded-xl shadow-xl hover:bg-pink-600 transition-all transform hover:scale-105 text-lg font-semibold"
-      >
-        👧 Girls Category
-      </button>
-      <button
-        onClick={() => handleCategorySelect("boys")}
-        className="px-6 py-4 bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 transition-all transform hover:scale-105 text-lg font-semibold"
-      >
-        👦 Boys Category
-      </button>
-      <button
-        onClick={() => handleCategorySelect("walkathon")}
-        className="px-6 py-4 bg-green-500 text-white rounded-xl shadow-xl hover:bg-green-600 transition-all transform hover:scale-105 text-lg font-semibold"
-      >
-        🚶 Walkathon
-      </button>
+        {/* Button Container */}
+        <div className="flex flex-wrap gap-6 justify-center">
+          {/* Boys Marathon Button */}
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }} // Starts hidden and below
+            animate={{ opacity: 1, y: 0 }} // Moves up into position
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Delayed effect
+          >
+            <Button
+              className="bg-gradient-to-r from-blue-400 to-blue-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
+              onClick={() => router.push("/register/boys")}
+            >
+              Boys Marathon
+            </Button>
+          </motion.div>
+
+          {/* Girls Marathon Button */}
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+          >
+            <Button
+              className="bg-gradient-to-r from-pink-400 to-pink-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
+              onClick={() => router.push("/register/girls")}
+            >
+              Girls Marathon
+            </Button>
+          </motion.div>
+
+          {/* Walkathon Button */}
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
+          >
+            <Button
+              className="bg-gradient-to-r from-green-400 to-green-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
+              onClick={() => router.push("/register/walkathon")}
+            >
+              Walkathon
+            </Button>
+          </motion.div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 w-full py-3 text-center bg-black/30">
+        <p>© 2025 Marathon Event | <a href="https://www.pathfindersit.in/">Team Pathfinder</a></p>
+      </footer>
     </div>
-  </main>
-
-  
-  <footer className="w-full py-6 bg-purple-900 text-blue-200 text-center text-sm">
-    © 2025 Marathon-16 | Team Pathfinder
-  </footer>
-</div>
-
   );
-};
-
-export default CategoryPage;
+}
