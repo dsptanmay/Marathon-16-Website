@@ -8,29 +8,40 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-// ✅ Form Validation Schema
+// ✅ Updated Form Validation Schema (Field Names Fixed)
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
+  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"), // FIXED
   email: z.string().email("Invalid email"),
-  uniqueCode: z.string().nonempty("Unique Code is required"),
+  unique_code: z.string().nonempty("Unique Code is required"), // FIXED
   usn: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function RegistrationForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
+  // ✅ Updated API Call (Field Names Fixed)
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/register/boys", {
         method: "POST",
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data), // ✅ No need to rename fields manually
       });
-      if (!response.ok) throw new Error("Failed to register");
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to register: ${errorMessage}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      reset(); // ✅ Clear form after success
     },
   });
 
@@ -40,8 +51,8 @@ export default function RegistrationForm() {
     <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-[#056cf4] via-[#0985e4] to-[#2b5995] p-4">
       <motion.div
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md"
-        initial={{ opacity: 0, y: 50 }} // Start hidden below
-        animate={{ opacity: 1, y: 0 }} // Fade and move up
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <h2 className="text-2xl font-bold mb-6 text-blue-600 text-center">Boys Marathon Registration</h2>
@@ -56,13 +67,13 @@ export default function RegistrationForm() {
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </motion.div>
 
-          {/* Phone Number */}
+          {/* Phone Number (Updated field name) */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
             </label>
-            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone")} />
-            {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone_no")} /> {/* FIXED */}
+            {errors.phone_no && <p className="text-red-500 text-sm">{errors.phone_no.message}</p>}
           </motion.div>
 
           {/* Email */}
@@ -72,13 +83,13 @@ export default function RegistrationForm() {
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </motion.div>
 
-          {/* Unique Code */}
+          {/* Unique Code (Updated field name) */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: MARA123" {...register("uniqueCode")} />
-            {errors.uniqueCode && <p className="text-red-500 text-sm">{errors.uniqueCode.message}</p>}
+            <Input placeholder="Ex: MARA123" {...register("unique_code")} /> {/* FIXED */}
+            {errors.unique_code && <p className="text-red-500 text-sm">{errors.unique_code.message}</p>}
           </motion.div>
 
           {/* USN */}
@@ -93,6 +104,16 @@ export default function RegistrationForm() {
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </motion.div>
+
+          {/* Error Message Display */}
+          {mutation.isError && (
+            <p className="text-red-500 text-sm text-center mt-2">{mutation.error.message}</p>
+          )}
+
+          {/* Success Message Display */}
+          {mutation.isSuccess && (
+            <p className="text-green-500 text-sm text-center mt-2">Registration successful! 🎉</p>
+          )}
         </form>
       </motion.div>
     </div>

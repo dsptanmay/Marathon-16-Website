@@ -8,28 +8,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
+
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
+  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"), // FIXED
   email: z.string().email("Invalid email"),
-  uniqueCode: z.string().nonempty("Unique Code is required"),
+  unique_code: z.string().nonempty("Unique Code is required"), // FIXED
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function WalkathonRegistration() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
+  // ✅ Updated API Call
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await fetch("/api/register/boys", {
+      const response = await fetch("/api/register/walkathon", { 
         method: "POST",
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data), 
       });
-      if (!response.ok) throw new Error("Failed to register");
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to register: ${errorMessage}`);
+      }
+
+      return response.json();
     },
+    onSuccess: () => reset(), // ✅ Clear form after success
   });
 
   const onSubmit = (data: FormData) => mutation.mutate(data);
@@ -71,7 +81,7 @@ export default function WalkathonRegistration() {
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </motion.div>
 
-          {/* Phone Number */}
+          {/* Phone Number (Updated field name) */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -80,8 +90,8 @@ export default function WalkathonRegistration() {
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
             </label>
-            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone")} />
-            {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone_no")} /> {/* FIXED */}
+            {errors.phone_no && <p className="text-red-500 text-sm">{errors.phone_no.message}</p>}
           </motion.div>
 
           {/* Email */}
@@ -95,7 +105,7 @@ export default function WalkathonRegistration() {
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </motion.div>
 
-          {/* Unique Code */}
+          {/* Unique Code (Updated field name) */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -104,8 +114,8 @@ export default function WalkathonRegistration() {
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: MARA123" {...register("uniqueCode")} />
-            {errors.uniqueCode && <p className="text-red-500 text-sm">{errors.uniqueCode.message}</p>}
+            <Input placeholder="Ex: WALK123" {...register("unique_code")} /> {/* FIXED */}
+            {errors.unique_code && <p className="text-red-500 text-sm">{errors.unique_code.message}</p>}
           </motion.div>
 
           {/* Submit Button */}
@@ -121,6 +131,16 @@ export default function WalkathonRegistration() {
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </motion.div>
+
+          {/* Error Message Display */}
+          {mutation.isError && (
+            <p className="text-red-500 text-sm text-center mt-2">{mutation.error.message}</p>
+          )}
+
+          {/* Success Message Display */}
+          {mutation.isSuccess && (
+            <p className="text-green-500 text-sm text-center mt-2">Registration successful! 🎉</p>
+          )}
 
         </form>
       </motion.div>

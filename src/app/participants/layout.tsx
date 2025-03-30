@@ -14,8 +14,8 @@ export default function ParticipantsLayout({
         <Link href="/participants/boys20" className="text-blue-500">
           Boys 20
         </Link>
-        <Link href="/participants/walkathon20" className="text-blue-500">
-          Walkathon 20
+        <Link href="/participants/walkathon10" className="text-blue-500">
+          Walkathon 10
         </Link>
       </nav>
       {children}

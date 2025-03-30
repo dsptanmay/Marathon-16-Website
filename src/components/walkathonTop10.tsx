@@ -13,7 +13,6 @@ const CrossDataSchema = z.object({
   name: z.string(),
   email: z.string().nullable(),
   phone_no: z.string(),
-  usn: z.string().nullable(),
   category: z.enum(["girls", "boys", "walkathon"]),
   isCrossed: z.boolean(),
   crossTime: z.string().nullable(),
@@ -58,13 +57,13 @@ const WalkathonCrossComponent: React.FC = () => {
   const handleDownload = async () => {
     if (!validatedParticipants.length) return;
     setLoading(true);
-    const pdfBytes = await generatePdf(validatedParticipants, "Top 20 Participants - Walkathon");
+    const pdfBytes = await generatePdf(validatedParticipants, "Top 10 Participants - Walkathon");
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Top20-Walkathon.pdf";
+    a.download = "Top10-Walkathon.pdf";
     a.click();
     window.URL.revokeObjectURL(url);
     setLoading(false);
@@ -72,7 +71,7 @@ const WalkathonCrossComponent: React.FC = () => {
 
   return (
     <div className="bg-gray-50 rounded-md shadow-md p-4 text-center">
-      <h1 className="text-xl font-bold mb-4">Top 20 Participants - Walkathon</h1>
+      <h1 className="text-xl font-bold mb-4">Top 10 Participants - Walkathon</h1>
       {isLoading ? <p>Loading...</p> : error ? <p className="text-red-500">Error fetching data</p> : (
         <button onClick={handleDownload} disabled={loading} className="bg-green-500 p-3 rounded-lg text-white">
           {loading ? "Generating PDF..." : "Download PDF"}

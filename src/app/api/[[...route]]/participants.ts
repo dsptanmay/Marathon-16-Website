@@ -31,13 +31,14 @@ const particiPantsRouter = new Hono()
     }
     return c.json(users);
   })
-  .get("/walkathon10", async (c) => {
+  .get("/walkathon", async (c) => {
     const users = await db
-      .select()
-      .from(masterTable)
-      .where(eq(masterTable.category, "walkathon"))
-      .orderBy(masterTable.crossTime)
-      .limit(10);
+    .select()
+    .from(masterTable)
+    .where(eq(masterTable.category, "walkathon"))
+    .orderBy(masterTable.crossTime)
+    .limit(10);
+  
 
     if (users.length === 0) {
       return c.json({ error: "No Participants" }, 404);
