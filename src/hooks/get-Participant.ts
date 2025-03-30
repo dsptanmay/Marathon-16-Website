@@ -4,7 +4,7 @@ import { InferResponseType } from "hono";
 
 type GirlsParticipants = InferResponseType<typeof api.participants["girls20"]["$get"], 200>;
 type BoysParticipants = InferResponseType<typeof api.participants["boys20"]["$get"], 200>;
-type WalkathonParticipants = InferResponseType<typeof api.participants["walkathon10"]["$get"], 200>;
+type WalkathonParticipants = InferResponseType<typeof api.participants["walkathon"]["$get"], 200>;
 
 
 
@@ -52,17 +52,22 @@ export const useBoys20 = () => {
 
 export const useWalkathon10 = () => {
   return useQuery<WalkathonParticipants, Error>({
-    queryKey: ["walkathon20"],
+    queryKey: ["walkathon10"], 
     queryFn: async () => {
       try {
-        const response = await api.participants["walkathon10"].$get();
-        
+        console.log("Fetching walkathon10...");
+        const response = await api.participants["walkathon"].$get();
+
+        console.log("Response Status:", response.status);
+        const data = await response.json();
+        console.log("Response Data:", data);
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
-          throw new Error(errorData.error || "Failed to fetch walkathon participants");
+          throw new Error(errorData.error || "Failed to fetch boys' participants");
         }
-        
-        return await response.json();
+
+        return data as WalkathonParticipants;
       } catch (error) {
         console.error("API request failed:", error);
         throw error instanceof Error ? error : new Error("Unknown error occurred");
@@ -70,3 +75,4 @@ export const useWalkathon10 = () => {
     },
   });
 };
+

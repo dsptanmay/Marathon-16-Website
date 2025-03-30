@@ -1,8 +1,11 @@
-import React from "react";
-import GirlsCrossComponent from "@/components/girlsTop20";
+"use client"
 
-const Girls20Page = () => {
-  return <GirlsCrossComponent />;
-};
+import GirlsCrossComponent from "@/components/girlsTop20"
 
-export default Girls20Page;
+export default function Girls20Page() {
+  return (
+    <div>
+      <GirlsCrossComponent />
+    </div>
+  )
+}
