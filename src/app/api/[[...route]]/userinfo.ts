@@ -11,7 +11,7 @@ const getUserInfoSchema = z.object({
   unique_code: z
     .string()
     .min(6, "unique_code is required")
-    .regex(/^[A-Z]{5}\d{1}$/),
+    .regex(/^[0-9]{5}[A-Z]$/),
 });
 
 const userRouter = new Hono().get(

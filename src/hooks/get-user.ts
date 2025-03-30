@@ -8,10 +8,28 @@ export const useUserInfo = (unique_code: string) => {
   return useQuery<User, Error>({
     queryKey: ["userInfo", unique_code],
     queryFn: async () => {
-      const response = await api.user.info.$get({ query: { unique_code } });
-      if (!response.ok) throw new Error("Failed to fetch user information");
-      return await response.json();
+    
+      if (!unique_code) {
+        throw new Error("Code is required");
+      }
+      
+      try {
+       
+        const response = await api.user.info.$get({ 
+          query: { unique_code: unique_code.trim() } 
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+          throw new Error(errorData.error || "Failed to fetch user information");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error instanceof Error ? error : new Error("Unknown error occurred");
+      }
     },
-    enabled: !!unique_code,
+    enabled: Boolean(unique_code) && unique_code.length === 6,
   });
 };
