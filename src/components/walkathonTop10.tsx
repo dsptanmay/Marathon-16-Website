@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { PDFDocument, StandardFonts, PageSizes, rgb } from "pdf-lib";
 import { z } from "zod";
 
-
 const CrossDataSchema = z.object({
   id: z.string().uuid(),
   unique_code: z.string(),
@@ -31,24 +30,46 @@ const WalkathonCrossComponent: React.FC = () => {
 
   async function generatePdf(data: CrossData[], title?: string) {
     const pdfDoc = await PDFDocument.create();
+    const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const page = pdfDoc.addPage(PageSizes.A2);
     const { width, height } = page.getSize();
+    const fontSize = 12;
+    const margin = 50;
+    const rowHeight = 30; 
 
-    page.drawText(title || "Top 20 Participants - Walkathon", {
-      x: 50,
-      y: height - 50,
-      size: 30,
+    let y = height - margin * 2;
+    page.setFont(helveticaBoldFont);
+    page.drawText(title || "Top 10 Participants - Walkathon", {
+      x: margin,
+      y,
       color: rgb(0, 0, 0),
+      size: 30,
     });
+    y -= rowHeight;
 
+    page.setFont(helveticaFont);
     data.forEach((participant, idx) => {
-      const formattedTime = participant.crossTime ? new Date(participant.crossTime).toLocaleString() : "N/A";
+      const formattedTime = participant.crossTime
+        ? new Date(participant.crossTime).toLocaleString()
+        : "N/A";
+      const phoneNumber = participant.phone_no || "No Phone";
+
       page.drawText(`${idx + 1}. ${participant.name} - ${formattedTime}`, {
-        x: 50,
-        y: height - 80 - idx * 20,
-        size: 12,
+        x: margin,
+        y,
+        size: fontSize,
         color: rgb(0, 0, 0),
       });
+      y -= 15;
+
+      page.drawText(`   Phone: ${phoneNumber}`, {
+        x: margin,
+        y,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
+      y -= rowHeight;
     });
 
     return pdfDoc.save();
@@ -70,11 +91,24 @@ const WalkathonCrossComponent: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 rounded-md shadow-md p-4 text-center">
-      <h1 className="text-xl font-bold mb-4">Top 10 Participants - Walkathon</h1>
-      {isLoading ? <p>Loading...</p> : error ? <p className="text-red-500">Error fetching data</p> : (
-        <button onClick={handleDownload} disabled={loading} className="bg-green-500 p-3 rounded-lg text-white">
-          {loading ? "Generating PDF..." : "Download PDF"}
+    <div className="bg-gray-50 rounded-md shadow-md m-3 sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-1/3 mx-auto p-4 flex flex-col">
+      <h1 className="text-xl font-bold mb-4 text-center">
+        Top 10 Participants - Walkathon
+      </h1>
+
+      {isLoading ? (
+        <p className="text-center">Loading...</p>
+      ) : error ? (
+        <p className="text-red-500 text-center">Error fetching data</p>
+      ) : (
+        <button
+          onClick={handleDownload}
+          disabled={loading}
+          className="bg-black rounded-lg"
+        >
+          <span className="bg-green-500 rounded-lg -translate-y-1 block gap-4 p-4 border-2 border-black text-xl hover:-translate-y-2 active:translate-x-0 active:translate-y-0 transition-all">
+            {loading ? "Generating PDF..." : "Download PDF"}
+          </span>
         </button>
       )}
     </div>
