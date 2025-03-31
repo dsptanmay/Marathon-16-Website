@@ -44,6 +44,42 @@ const particiPantsRouter = new Hono()
       return c.json({ error: "No Participants" }, 404);
     }
     return c.json(users);
-  });
+  })
+    .get("/allparticipantsboys", async(c)=>{
+      const users = await db
+      .select()
+      .from(masterTable)
+      .where(eq(masterTable.category, "boys"))
+      .orderBy(masterTable.crossTime)    
+  
+      if (users.length === 0) {
+        return c.json({ error: "No Participants" }, 404);
+      }
+      return c.json(users)
+    })
+    .get("/allparticipantgirls", async(c)=>{
+      const users = await db
+      .select()
+      .from(masterTable)
+      .where(eq(masterTable.category, "girls"))
+      .orderBy(masterTable.crossTime)    
+  
+      if (users.length === 0) {
+        return c.json({ error: "No Participants" }, 404);
+      }
+      return c.json(users)
+    })
+    .get("/allparticipantswalkathon", async(c)=>{
+      const users = await db
+      .select()
+      .from(masterTable)
+      .where(eq(masterTable.category, "walkathon"))
+      .orderBy(masterTable.crossTime)    
+  
+      if (users.length === 0) {
+        return c.json({ error: "No Participants" }, 404);
+      }
+      return c.json(users)
+    })
 
 export default particiPantsRouter;

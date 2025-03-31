@@ -17,6 +17,15 @@ export default function ParticipantsLayout({
         <Link href="/participants/walkathon10" className="text-blue-500">
           Walkathon 10
         </Link>
+        <Link href="/participants/allboys" className="text-blue-500">
+          All boys Participant
+        </Link>
+        <Link href="/participants/allgirls" className="text-blue-500">
+          All girls participant
+        </Link>
+        <Link href="/participants/allwalkathon" className="text-blue-500">
+          All walkathon participant
+        </Link>
       </nav>
       {children}
     </div>
