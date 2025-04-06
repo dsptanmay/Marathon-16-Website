@@ -2,84 +2,58 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { motion } from "framer-motion";
+// import Image from "next/image";
 
 export default function HomePage() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0628a3] via-[#6137bc] to-[#21114a] text-white">
-      
-      {/* Header */}
-      <header className="fixed top-0 left-0 w-full py-4 px-6 bg-black/30 flex items-center justify-between z-50">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Marathon Logo" width={40} height={40} />
-          <h1 className="text-xl font-bold">Marathon Registration</h1>
-        </div>
+
+
+      <header className="fixed top-0 left-0 w-full py-4 px-6 bg-black/30 flex justify-center items-center z-50">
+        <h1 className="text-xl font-bold text-center">Marathon Registration</h1>
       </header>
 
-      {/* Main Content */}
-      <main className="text-center mt-20">
-        {/* Heading with emerging effect */}
-        <motion.h1 
-          className="text-4xl font-extrabold mb-6"
-          initial={{ opacity: 0, y: 50 }} // Starts hidden and below
-          animate={{ opacity: 1, y: 0 }} // Moves up into position
-          transition={{ duration: 0.8, ease: "easeOut" }} 
-        >
-          Select Your Category
-        </motion.h1>
 
-        {/* Button Container */}
-        <div className="flex flex-wrap gap-6 justify-center">
-          {/* Boys Marathon Button */}
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }} // Starts hidden and below
-            animate={{ opacity: 1, y: 0 }} // Moves up into position
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Delayed effect
-          >
-            <Button
-              className="bg-gradient-to-r from-blue-400 to-blue-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
-              onClick={() => router.push("/register/boys")}
-            >
-              Boys Marathon
-            </Button>
-          </motion.div>
+      <main className="mt-32 w-full px-6 max-w-md text-center">
+        <h1 className="text-4xl font-extrabold mb-14">Select Your Category :</h1>
 
-          {/* Girls Marathon Button */}
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-          >
-            <Button
-              className="bg-gradient-to-r from-pink-400 to-pink-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
-              onClick={() => router.push("/register/girls")}
-            >
-              Girls Marathon
-            </Button>
-          </motion.div>
+        <div className="flex flex-col gap-14 w-full">
 
-          {/* Walkathon Button */}
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
+          <Button
+            className="w-full bg-gradient-to-r from-blue-400 to-blue-600 px-8 py-8 rounded-lg text-xl shadow-lg"
+            onClick={() => router.push("/register/boys")}
           >
-            <Button
-              className="bg-gradient-to-r from-green-400 to-green-600 hover:scale-105 transition-transform px-6 py-3 rounded-lg text-lg shadow-lg"
-              onClick={() => router.push("/register/walkathon")}
-            >
-              Walkathon
-            </Button>
-          </motion.div>
+            Boys Marathon
+          </Button>
+
+
+          <Button
+            className="w-full bg-gradient-to-r from-pink-400 to-pink-600 px-8 py-8 rounded-lg text-xl shadow-lg"
+            onClick={() => router.push("/register/girls")}
+          >
+            Girls Marathon
+          </Button>
+
+
+          <Button
+            className="w-full bg-gradient-to-r from-green-400 to-green-600 px-8 py-8 rounded-lg text-xl shadow-lg"
+            onClick={() => router.push("/register/walkathon")}
+          >
+            Walkathon
+          </Button>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 w-full py-3 text-center bg-black/30">
-        <p>© 2025 Marathon Event | <a href="https://www.pathfindersit.in/">Team Pathfinder</a></p>
+
+      <footer className="fixed bottom-0 left-0 w-full py-3 text-center bg-black/30 text-sm">
+        <p>
+          © 2025 Marathon Event |{" "}
+          <a href="https://www.pathfindersit.in/" className="underline hover:text-gray-300">
+            Team Pathfinder
+          </a>
+        </p>
       </footer>
     </div>
   );
