@@ -1,19 +1,17 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-
+import { useRegisterWalkathon } from "@/hooks/use-register-user";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"), // FIXED
+  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
   email: z.string().email("Invalid email"),
-  unique_code: z.string().nonempty("Unique Code is required"), // FIXED
+  unique_code: z.string().nonempty("Unique Code is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -23,127 +21,74 @@ export default function WalkathonRegistration() {
     resolver: zodResolver(formSchema),
   });
 
-  // ✅ Updated API Call
-  const mutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const response = await fetch("/api/register/walkathon", { 
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data), 
-      });
+  const mutation = useRegisterWalkathon();
 
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Failed to register: ${errorMessage}`);
-      }
-
-      return response.json();
-    },
-    onSuccess: () => reset(), // ✅ Clear form after success
-  });
-
-  const onSubmit = (data: FormData) => mutation.mutate(data);
+  const onSubmit = (data: FormData) => {
+    mutation.mutate(data, {
+      onSuccess: () => reset(),
+    });
+  };
 
   return (
-    <motion.div 
-      className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-green-400 via-green-600 to-green-900"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <motion.div 
-        className="bg-green-200 p-8 rounded-xl shadow-lg w-full max-w-md"
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <motion.h2 
-          className="text-2xl font-bold mb-6 text-green-600 text-center"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+    <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-green-400 via-green-600 to-green-900">
+      <div className="bg-green-200 p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-green-600 text-center">
           Walkathon Registration
-        </motion.h2>
+        </h2>
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
           {/* Name */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <div>
             <label className="block font-semibold mb-1">
               Name <span className="text-red-500">*</span>
             </label>
             <Input placeholder="Ex: John Doe" {...register("name")} />
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-          </motion.div>
+          </div>
 
-          {/* Phone Number (Updated field name) */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          {/* Phone Number */}
+          <div>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
             </label>
-            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone_no")} /> {/* FIXED */}
+            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone_no")} />
             {errors.phone_no && <p className="text-red-500 text-sm">{errors.phone_no.message}</p>}
-          </motion.div>
+          </div>
 
           {/* Email */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
+          <div>
             <label className="block font-semibold mb-1">Email</label>
             <Input type="email" placeholder="Ex: yourname@email.com" {...register("email")} />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </motion.div>
+          </div>
 
-          {/* Unique Code (Updated field name) */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
+          {/* Unique Code */}
+          <div>
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: WALK123" {...register("unique_code")} /> {/* FIXED */}
+            <Input placeholder="Ex: WALK123" {...register("unique_code")} />
             {errors.unique_code && <p className="text-red-500 text-sm">{errors.unique_code.message}</p>}
-          </motion.div>
+          </div>
 
           {/* Submit Button */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            transition={{ duration: 0.5, delay: 0.7 }}
-          >
-            <Button 
-              type="submit" 
-              className="w-full bg-green-600 hover:bg-green-700"
-            >
+          <div>
+            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
-          </motion.div>
+          </div>
 
-          {/* Error Message Display */}
+          {/* Error Message */}
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">{mutation.error.message}</p>
           )}
 
-          {/* Success Message Display */}
+          {/* Success Message */}
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">Registration successful! 🎉</p>
           )}
-
         </form>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
