@@ -84,7 +84,7 @@ export default function RegistrationForm() {
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: MARA123" {...register("unique_code")} />
+            <Input placeholder="Ex: 12345L" {...register("unique_code")} />
             {errors.unique_code && (
               <p className="text-red-500 text-sm">{errors.unique_code.message}</p>
             )}

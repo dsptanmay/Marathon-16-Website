@@ -16,7 +16,7 @@ export default function HomePage() {
       </header>
 
 
-      <main className="mt-32 w-full px-6 max-w-md text-center">
+      <main className="mt-10 w-full px-6 max-w-md text-center">
         <h1 className="text-4xl font-extrabold mb-14">Select Your Category :</h1>
 
         <div className="flex flex-col gap-14 w-full">
@@ -44,6 +44,13 @@ export default function HomePage() {
             Walkathon
           </Button>
         </div>
+        <Button
+            className="w-full bg-gradient-to-r from-violet-400 to-violet-800 mt-24 px-8 py-8 rounded-lg text-xl shadow-lg"
+            onClick={() => router.push("/certificate")}
+          >
+            GET CERTIFICATE
+          </Button>
+
       </main>
 
 

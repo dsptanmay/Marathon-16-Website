@@ -12,19 +12,27 @@ const formSchema = z.object({
   phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
   email: z.string().email("Invalid email"),
   unique_code: z.string().nonempty("Unique Code is required"),
+  gender: z.enum(["boy", "girl"], {
+    required_error: "Gender is required",
+  }),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function WalkathonRegistration() {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
   const mutation = useRegisterWalkathon();
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data, {
+    const extendedData = {
+      ...data,
+      category: data.gender === "girl" ? "walkathon_f" as const : "walkathon_m" as const,
+    };
+
+    mutation.mutate(extendedData, {
       onSuccess: () => reset(),
     });
   };
@@ -67,8 +75,25 @@ export default function WalkathonRegistration() {
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: WALK123" {...register("unique_code")} />
+            <Input placeholder="Ex: 12345W" {...register("unique_code")} />
             {errors.unique_code && <p className="text-red-500 text-sm">{errors.unique_code.message}</p>}
+          </div>
+
+          {/* Gender */}
+          <div>
+            <label className="block font-semibold mb-1">
+              Gender <span className="text-red-500">*</span>
+            </label>
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              {...register("gender")}
+              defaultValue=""
+            >
+              <option value="" disabled>Select Gender</option>
+              <option value="boy">Boy</option>
+              <option value="girl">Girl</option>
+            </select>
+            {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
           </div>
 
           {/* Submit Button */}
