@@ -25,69 +25,67 @@ export default function CodeValidator() {
 
 
 
- 
 
   const generateCertificatePDF = async (participantName: string): Promise<Uint8Array | null> => {
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([612, 792]);
+      const pageWidth = 842; // A4 width in points (landscape)
+      const pageHeight = 595; // A4 height in points (landscape)
+      const page = pdfDoc.addPage([pageWidth, pageHeight]);
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  
-      // 📄 Background Image
-      const imageUrl = 'https://i.imgur.com/BtPP8WS.png';
+
+      const imageUrl = "https://i.imgur.com/BtPP8WS.png";
       const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
       const backgroundImage = await pdfDoc.embedPng(imageBytes);
-  
+
       page.drawImage(backgroundImage, {
         x: 0,
         y: 0,
-        width: 612,
-        height: 792,
+        width: pageWidth,
+        height: pageHeight,
       });
-  
-  
-      const nameSize = 20;
+
+      const nameSize = 28;
       const nameTextWidth = font.widthOfTextAtSize(participantName, nameSize);
-      const nameX = (612 - nameTextWidth) / 2;
-  
+      const nameX = (pageWidth - nameTextWidth) / 2;
+      const nameY = pageHeight / 2 + 60;
+
       page.drawText(participantName, {
         x: nameX,
-        y: 475, 
+        y: nameY,
         size: nameSize,
         font,
         color: rgb(0, 0, 0),
       });
-  
-     
-      const today = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
+
+      const today = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
-  
+
       page.drawText(`Date: ${today}`, {
-        x: 420,
-        y: 125, 
-        size: 12,
+        x: pageWidth - 170,
+        y: 120,
+        size: 14,
         font,
         color: rgb(0, 0, 0),
       });
-  
-      page.drawText('Team Pathfinder', {
-        x: 420,
-        y: 110, 
-        size: 12,
+
+      page.drawText("Team Pathfinder", {
+        x: pageWidth - 170,
+        y: 105,
+        size: 14,
         font,
         color: rgb(0, 0, 0),
       });
-  
+
       return await pdfDoc.save();
     } catch (error) {
-      console.error('PDF Generation Failed:', error);
+      console.error("PDF Generation Failed:", error);
       return null;
     }
   };
-  
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,7 +94,7 @@ export default function CodeValidator() {
     setSuccess(false);
     setIsValidating(true);
 
-   
+
     if (!validateCode(code)) {
       setError("Invalid Code! It must be 5 digits followed by 1 uppercase letter (e.g., 12345A).");
       setIsValidCode(false);
