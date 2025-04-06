@@ -16,7 +16,6 @@ export const metadata: Metadata = {
     { name: "Aveek Chakraborty" },
     { name: "Yuvraj Singh" },
     { name: "Aviral Sharma" },
-    { name: "Parth" },
   ],
 };
 
