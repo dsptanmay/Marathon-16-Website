@@ -14,12 +14,10 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 w-full py-4 px-6 bg-black/30 flex justify-center items-center z-50">
         <h1 className="text-xl font-bold text-center">Marathon Registration</h1>
       </header>
-
-
-      <main className="mt-10 w-full px-6 max-w-md text-center">
+      <main className=" w-full px-6 max-w-md text-center">
         <h1 className="text-4xl font-extrabold mb-14">Select Your Category :</h1>
 
-        <div className="flex flex-col gap-14 w-full">
+        <div className="flex flex-col gap-12 w-full">
 
           <Button
             className="w-full bg-gradient-to-r from-blue-400 to-blue-600 px-8 py-8 rounded-lg text-xl shadow-lg"
@@ -43,13 +41,14 @@ export default function HomePage() {
           >
             Walkathon
           </Button>
-        </div>
-        <Button
-            className="w-full bg-gradient-to-r from-violet-400 to-violet-800 mt-24 px-8 py-8 rounded-lg text-xl shadow-lg"
+          <Button
+            className="w-full bg-gradient-to-r from-violet-400 to-violet-800 px-8 py-8 rounded-lg text-xl shadow-lg"
             onClick={() => router.push("/certificate")}
           >
             GET CERTIFICATE
           </Button>
+        </div>
+       
 
       </main>
 
