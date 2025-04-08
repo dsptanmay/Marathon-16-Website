@@ -5,8 +5,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRegisterBoys } from "@/hooks/use-register-user"; 
-
+import { useRegisterBoys } from "@/hooks/use-register-user";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
@@ -30,8 +30,21 @@ export default function RegistrationForm() {
 
   const mutation = useRegisterBoys();
 
+ 
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      window.open("https://chat.whatsapp.com/GW4dbUiTxXxGvXJ2C3d6UK", "_blank");
+    }
+  }, [mutation.isSuccess]);
+
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data, {
+    const extendedData = {
+      ...data,
+      Gender: "boy" as const,
+      category: "boys" as const,
+    };
+
+    mutation.mutate(extendedData, {
       onSuccess: () => reset(),
     });
   };
@@ -103,14 +116,14 @@ export default function RegistrationForm() {
             </Button>
           </div>
 
-          {/* Error Message Display */}
+          {/* Error Message */}
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">
               {mutation.error.message}
             </p>
           )}
 
-          {/* Success Message Display */}
+          {/* Success Message */}
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">
               Registration successful! 🎉

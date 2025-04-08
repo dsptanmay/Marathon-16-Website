@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { AlertDescription } from "@/components/ui/alert";
@@ -29,12 +30,12 @@ export default function CodeValidator() {
   const generateCertificatePDF = async (participantName: string): Promise<Uint8Array | null> => {
     try {
       const pdfDoc = await PDFDocument.create();
-      const pageWidth = 842; // A4 width in points (landscape)
-      const pageHeight = 595; // A4 height in points (landscape)
+      const pageWidth = 842; 
+      const pageHeight = 595; 
       const page = pdfDoc.addPage([pageWidth, pageHeight]);
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      const imageUrl = "https://i.imgur.com/BtPP8WS.png";
+      const imageUrl = "https://i.imgur.com/T7AMnkD.png";
       const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
       const backgroundImage = await pdfDoc.embedPng(imageBytes);
 
@@ -48,7 +49,7 @@ export default function CodeValidator() {
       const nameSize = 28;
       const nameTextWidth = font.widthOfTextAtSize(participantName, nameSize);
       const nameX = (pageWidth - nameTextWidth) / 2;
-      const nameY = pageHeight / 2 + 60;
+      const nameY = pageHeight / 2 + 10;
 
       page.drawText(participantName, {
         x: nameX,
@@ -58,27 +59,7 @@ export default function CodeValidator() {
         color: rgb(0, 0, 0),
       });
 
-      const today = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
 
-      page.drawText(`Date: ${today}`, {
-        x: pageWidth - 170,
-        y: 120,
-        size: 14,
-        font,
-        color: rgb(0, 0, 0),
-      });
-
-      page.drawText("Team Pathfinder", {
-        x: pageWidth - 170,
-        y: 105,
-        size: 14,
-        font,
-        color: rgb(0, 0, 0),
-      });
 
       return await pdfDoc.save();
     } catch (error) {
@@ -114,6 +95,12 @@ export default function CodeValidator() {
 
     if (!user) {
       setError("Failed to retrieve user information. Please try again.");
+      setIsValidating(false);
+      return;
+    }
+
+    if (!user.isCrossed) {
+      setError("You are not eligible for a certificate yet.");
       setIsValidating(false);
       return;
     }

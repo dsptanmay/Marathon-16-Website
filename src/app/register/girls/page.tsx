@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRegisterGirls } from "@/hooks/use-register-user";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
@@ -29,8 +30,21 @@ export default function GirlsRegistration() {
 
   const mutation = useRegisterGirls();
 
+  
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      window.open("https://chat.whatsapp.com/JKmyWm3OMHFHxi7MsGd6bZ", "_blank");
+    }
+  }, [mutation.isSuccess]);
+
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data, {
+    const extendedData = {
+      ...data,
+      Gender: "girl" as const,
+      category: "girls" as const,
+    };
+
+    mutation.mutate(extendedData, {
       onSuccess: () => reset(),
     });
   };

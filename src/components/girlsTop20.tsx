@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useGirls20 } from "@/hooks/get-Participant"; 
+import { useGirls20 } from "@/hooks/get-Participant";
 import React, { useState } from "react";
 import { PDFDocument, StandardFonts, PageSizes, rgb } from "pdf-lib";
 import { z } from "zod";
 
- 
+// ✅ Schema with correct enum types
 const CrossDataSchema = z.object({
   id: z.string().uuid(),
   unique_code: z.string(),
@@ -14,7 +14,8 @@ const CrossDataSchema = z.object({
   email: z.string().nullable(),
   phone_no: z.string(),
   usn: z.string().nullable(),
-  category: z.enum(["girls", "boys", "walkathon"]),
+  Gender:z.enum(["boy", "girl"]),
+  category: z.enum(["girls", "boys", "walkathon_f", "walkathon_m"]),
   isCrossed: z.boolean(),
   crossTime: z.string().nullable(),
   isSitian: z.boolean().nullable(),
@@ -25,12 +26,11 @@ type CrossData = z.infer<typeof CrossDataSchema>;
 const GirlsCrossComponent: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [logoBytes, setLogoBytes] = useState<ArrayBuffer>();
-
   const { data: participants, isLoading, error } = useGirls20();
 
-  const validatedParticipants = participants?.filter((p) =>
-    CrossDataSchema.safeParse(p).success
-  ) ?? [];
+  const validatedParticipants: CrossData[] =
+    participants?.filter((p): p is CrossData => CrossDataSchema.safeParse(p).success) ?? [];
+
   async function generatePdf(data: CrossData[], title?: string) {
     const pdfDoc = await PDFDocument.create();
     const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -39,8 +39,8 @@ const GirlsCrossComponent: React.FC = () => {
     const { width, height } = page.getSize();
     const fontSize = 12;
     const margin = 50;
-    const rowHeight = 40; // Increased to fit more details
-  
+    const rowHeight = 40;
+
     if (logoBytes) {
       const pngImage = await pdfDoc.embedPng(logoBytes);
       const pngDims = pngImage.scale(0.015);
@@ -51,7 +51,7 @@ const GirlsCrossComponent: React.FC = () => {
         height: pngDims.height,
       });
     }
-  
+
     let y = height - margin * 2;
     page.setFont(helveticaBoldFont);
     page.drawText(title || "Top 20 Participants - Girls", {
@@ -61,7 +61,7 @@ const GirlsCrossComponent: React.FC = () => {
       size: 30,
     });
     y -= rowHeight;
-  
+
     page.setFont(helveticaFont);
     data.forEach((participant, idx) => {
       const formattedTime = participant.crossTime
@@ -69,22 +69,26 @@ const GirlsCrossComponent: React.FC = () => {
         : "N/A";
       const phoneNumber = participant.phone_no || "No Phone";
       const usn = participant.usn ? `USN: ${participant.usn}` : "USN: N/A";
-  
-      page.drawText(
-        `${idx + 1}. ${participant.name} - ${formattedTime}`,
-        { x: margin, y, size: fontSize, color: rgb(0, 0, 0) }
-      );
-      y -= 20; 
-      page.drawText(
-        `   Phone: ${phoneNumber} | ${usn}`,
-        { x: margin, y, size: fontSize, color: rgb(0, 0, 0) }
-      );
+
+      page.drawText(`${idx + 1}. ${participant.name} - ${formattedTime}`, {
+        x: margin,
+        y,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
+      y -= 20;
+
+      page.drawText(`   Phone: ${phoneNumber} | ${usn}`, {
+        x: margin,
+        y,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
       y -= rowHeight;
     });
-  
+
     return pdfDoc.save();
   }
-  
 
   const handleDownload = async () => {
     if (!validatedParticipants.length) return;
@@ -95,7 +99,6 @@ const GirlsCrossComponent: React.FC = () => {
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-
     a.href = url;
     a.download = "Top20-Girls.pdf";
     a.click();

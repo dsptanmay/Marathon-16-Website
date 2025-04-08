@@ -21,10 +21,16 @@ export default function ParticipantsLayout({
           Boys 20
         </Link>
         <Link
-          href="/participants/walkathon10"
+          href="/participants/walkathonboys"
           className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition"
         >
-          Walkathon 10
+          Walkathon Boys 10
+        </Link>
+        <Link
+          href="/participants/walkathongirls"
+          className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition"
+        >
+          Walkathon Girls 10
         </Link>
         <Link
           href="/participants/allboys"

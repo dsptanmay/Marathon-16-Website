@@ -3,9 +3,10 @@ import { Hono } from "hono";
 import { masterTable } from "@/db/schema";
 import { createUserSchema } from "@/validations/masterSchema";
 import { zValidator } from "@hono/zod-validator";
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 
 const validationMiddleware = zValidator("json", createUserSchema);
+
 
 const transporters = [
   nodemailer.createTransport({
@@ -13,8 +14,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "13742shyuvraj@gmail.com",
-      pass: "upcl lpqf txlq rdeb",
+      user: "pathfinderoffical72@gmail.com",
+      pass: "wlau micc lpzi lsit",
     },
   }),
   nodemailer.createTransport({
@@ -22,8 +23,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "email2@gmail.com",
-      pass: "app_password_2",
+      user: "Pathfinderoffical906@gmail.com",
+      pass: "mnbp xyxq nfmj urrw",
     },
   }),
   nodemailer.createTransport({
@@ -31,8 +32,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "email3@gmail.com",
-      pass: "app_password_3",
+      user: "pathfinderoffical8@gmail.com",
+      pass: "xecq lind kqfu qfbu",
     },
   }),
   nodemailer.createTransport({
@@ -40,14 +41,13 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "email4@gmail.com",
-      pass: "app_password_4",
+      user: "pathfinderoffical5@gmail.com",
+      pass: "yzmx qqrj iiec trgs",
     },
   }),
 ];
 
 let transporterIndex = 0;
-
 const getNextTransporter = () => {
   const transporter = transporters[transporterIndex];
   transporterIndex = (transporterIndex + 1) % transporters.length;
@@ -56,7 +56,6 @@ const getNextTransporter = () => {
 
 const sendEmail = async (to: string, uniqueCode: string) => {
   const transporter = getNextTransporter();
-
   const mailOptions = {
     from: '"Team PathFinder" <pathfinder@gmail.com>',
     to,
@@ -66,12 +65,13 @@ const sendEmail = async (to: string, uniqueCode: string) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(`Email sent successfully to ${to}:`, info.response);
+    console.log(`Email sent to ${to}:`, info.response);
   } catch (error) {
-    console.error(`Error while sending email to ${to}:`, error);
+    console.error(`Error sending email to ${to}:`, error);
   }
 };
 
+// Registration routes
 const registerRouter = new Hono()
   .post("/girls", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
@@ -84,11 +84,11 @@ const registerRouter = new Hono()
         phone_no: body.phone_no,
         usn: body.usn,
         category: "girls",
+        Gender: "girl",
       })
       .returning();
 
-    if (res.length === 0)
-      return c.json({ error: "Error in registering user!" }, 400);
+    if (res.length === 0) return c.json({ error: "Error in registering user!" }, 400);
 
     if (body.email) await sendEmail(body.email, body.unique_code);
 
@@ -105,11 +105,11 @@ const registerRouter = new Hono()
         phone_no: body.phone_no,
         usn: body.usn,
         category: "boys",
+        Gender: "boy",
       })
       .returning();
 
-    if (res.length === 0)
-      return c.json({ error: "Error in registering user!" }, 400);
+    if (res.length === 0) return c.json({ error: "Error in registering user!" }, 400);
 
     if (body.email) await sendEmail(body.email, body.unique_code);
 
@@ -118,6 +118,12 @@ const registerRouter = new Hono()
   .post("/walkathon", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
+    const genderValue = body.Gender?.toLowerCase();
+
+
+    const Gender = genderValue as "girl" | "boy";
+    const category = Gender === "girl" ? "walkathon_f" : "walkathon_m";
+
     const res = await db
       .insert(masterTable)
       .values({
@@ -125,16 +131,19 @@ const registerRouter = new Hono()
         name: body.name,
         phone_no: body.phone_no,
         usn: body.usn,
-        category: "walkathon",
+        category,
+        Gender,
       })
       .returning();
 
-    if (res.length === 0)
-      return c.json({ message: "Error in registering user!" }, 400);
+    if (res.length === 0) {
+      return c.json({ error: "Error in registering user!" }, 400);
+    }
 
     if (body.email) await sendEmail(body.email, body.unique_code);
 
     return c.json({ message: "User registered successfully" }, 201);
-  });
+  })
+
 
 export default registerRouter;

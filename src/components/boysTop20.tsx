@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useBoys20 } from "@/hooks/get-Participant"; 
+import { useBoys20 } from "@/hooks/get-Participant";
 import React, { useState } from "react";
 import { PDFDocument, StandardFonts, PageSizes, rgb } from "pdf-lib";
 import { z } from "zod";
+
 
 const CrossDataSchema = z.object({
   id: z.string().uuid(),
@@ -13,7 +14,8 @@ const CrossDataSchema = z.object({
   email: z.string().nullable(),
   phone_no: z.string(),
   usn: z.string().nullable(),
-  category: z.enum(["girls", "boys", "walkathon"]),
+  Gender: z.enum(["boy", "girl"]),
+  category: z.enum(["girls", "boys", "walkathon_f", "walkathon_m"]),
   isCrossed: z.boolean(),
   crossTime: z.string().nullable(),
   isSitian: z.boolean().nullable(),
@@ -24,12 +26,10 @@ type CrossData = z.infer<typeof CrossDataSchema>;
 const BoysCrossComponent: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [logoBytes, setLogoBytes] = useState<ArrayBuffer>();
-  
   const { data: participants, isLoading, error } = useBoys20();
-  
-  const validatedParticipants = participants?.filter((p) =>
-    CrossDataSchema.safeParse(p).success
-  ) ?? [];
+
+  const validatedParticipants: CrossData[] =
+    participants?.filter((p): p is CrossData => CrossDataSchema.safeParse(p).success) ?? [];
 
   async function generatePdf(data: CrossData[], title?: string) {
     const pdfDoc = await PDFDocument.create();
@@ -39,7 +39,7 @@ const BoysCrossComponent: React.FC = () => {
     const { width, height } = page.getSize();
     const fontSize = 12;
     const margin = 50;
-    const rowHeight = 40; 
+    const rowHeight = 40;
 
     if (logoBytes) {
       const pngImage = await pdfDoc.embedPng(logoBytes);
@@ -70,15 +70,20 @@ const BoysCrossComponent: React.FC = () => {
       const phoneNumber = participant.phone_no || "No Phone";
       const usn = participant.usn ? `USN: ${participant.usn}` : "USN: N/A";
 
-      page.drawText(
-        `${idx + 1}. ${participant.name} - ${formattedTime}`,
-        { x: margin, y, size: fontSize, color: rgb(0, 0, 0) }
-      );
-      y -= 20; 
-      page.drawText(
-        `   Phone: ${phoneNumber} | ${usn}`,
-        { x: margin, y, size: fontSize, color: rgb(0, 0, 0) }
-      );
+      page.drawText(`${idx + 1}. ${participant.name} - ${formattedTime}`, {
+        x: margin,
+        y,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
+      y -= 20;
+
+      page.drawText(`   Phone: ${phoneNumber} | ${usn}`, {
+        x: margin,
+        y,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
       y -= rowHeight;
     });
 
@@ -94,7 +99,6 @@ const BoysCrossComponent: React.FC = () => {
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-
     a.href = url;
     a.download = "Top20-Boys.pdf";
     a.click();
