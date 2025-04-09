@@ -7,11 +7,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRegisterGirls } from "@/hooks/use-register-user";
 
+
+function isValidCode(code: string): boolean {
+  if (!/^\d{5}[A-Z]{1}$/.test(code)) return false;
+  const digits = code.slice(0, 5);
+  const letter = code.slice(5);
+  const sum = Array.from(digits).reduce(
+    (acc, digit) => acc + Number.parseInt(digit),
+    0
+  );
+  const remainder = sum % 26;
+  const expectedLetter = String.fromCharCode(65 + remainder);
+
+  return letter === expectedLetter;
+}
+
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
+  phone_no: z
+    .string()
+    .min(10, "Phone number must be 10 digits")
+    .max(10, "Phone number must be 10 digits")
+    .refine((val) => /^\d{10}$/.test(val), {
+      message: "Phone number must contain only digits",
+    }),
   email: z.string().email("Invalid email"),
-  unique_code: z.string().nonempty("Unique Code is required"),
+  unique_code: z
+    .string()
+    .min(6, "Unique code must be 6 characters")
+    .max(6, "Unique code must be 6 characters")
+    .refine((code) => isValidCode(code), {
+      message: "Invalid unique code format",
+    }),
   usn: z.string().optional(),
 });
 
@@ -43,7 +70,7 @@ export default function GirlsRegistration() {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name */}
+         
           <div>
             <label className="block font-semibold mb-1">
               Name <span className="text-red-500">*</span>
@@ -54,7 +81,7 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-          {/* Phone Number */}
+          
           <div>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
@@ -65,7 +92,7 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-          {/* Email */}
+         
           <div>
             <label className="block font-semibold mb-1">Email</label>
             <Input type="email" placeholder="Ex: yourname@email.com" {...register("email")} />
@@ -74,7 +101,6 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-          {/* Unique Code */}
           <div>
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
@@ -85,27 +111,27 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-          {/* USN */}
+         
           <div>
             <label className="block font-semibold mb-1">USN</label>
             <Input placeholder="Ex: 1SIXXYYXXX" {...register("usn")} />
           </div>
 
-          {/* Submit Button */}
+          
           <div>
             <Button type="submit" className="w-full bg-pink-600 hover:bg-pink-700">
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </div>
 
-          {/* Error Message */}
+          
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">
               {mutation.error.message}
             </p>
           )}
 
-          {/* Success Message */}
+          
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">
               Registration successful! 🎉

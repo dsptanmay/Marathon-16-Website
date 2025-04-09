@@ -7,11 +7,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRegisterWalkathon } from "@/hooks/use-register-user";
 
+
+function isValidCode(code: string): boolean {
+  if (!/^\d{5}[A-Z]{1}$/.test(code)) return false;
+  const digits = code.slice(0, 5);
+  const letter = code.slice(5);
+  const sum = Array.from(digits).reduce(
+    (acc, digit) => acc + Number.parseInt(digit),
+    0
+  );
+  const remainder = sum % 26;
+  const expectedLetter = String.fromCharCode(65 + remainder); // 65 = 'A'
+
+  return letter === expectedLetter;
+}
+
+
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
+  phone_no: z
+    .string()
+    .min(10, "Phone number must be 10 digits")
+    .max(10, "Phone number must be 10 digits")
+    .refine((val) => /^\d{10}$/.test(val), {
+      message: "Phone number must contain only digits",
+    }),
   email: z.string().email("Invalid email"),
-  unique_code: z.string().nonempty("Unique Code is required"),
+  unique_code: z
+    .string()
+    .length(6, "Unique code must be exactly 6 characters")
+    .refine((code) => isValidCode(code), {
+      message: "Invalid unique code format",
+    }),
   gender: z.enum(["boy", "girl"], {
     required_error: "Gender is required",
   }),
@@ -20,7 +47,12 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function WalkathonRegistration() {
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
@@ -43,9 +75,9 @@ export default function WalkathonRegistration() {
         <h2 className="text-2xl font-bold mb-6 text-green-600 text-center">
           Walkathon Registration
         </h2>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name */}
+         
           <div>
             <label className="block font-semibold mb-1">
               Name <span className="text-red-500">*</span>
@@ -54,7 +86,7 @@ export default function WalkathonRegistration() {
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
 
-          {/* Phone Number */}
+          
           <div>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
@@ -63,14 +95,14 @@ export default function WalkathonRegistration() {
             {errors.phone_no && <p className="text-red-500 text-sm">{errors.phone_no.message}</p>}
           </div>
 
-          {/* Email */}
+         
           <div>
             <label className="block font-semibold mb-1">Email</label>
             <Input type="email" placeholder="Ex: yourname@email.com" {...register("email")} />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
 
-          {/* Unique Code */}
+         
           <div>
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
@@ -79,7 +111,7 @@ export default function WalkathonRegistration() {
             {errors.unique_code && <p className="text-red-500 text-sm">{errors.unique_code.message}</p>}
           </div>
 
-          {/* Gender */}
+          
           <div>
             <label className="block font-semibold mb-1">
               Gender <span className="text-red-500">*</span>
@@ -96,19 +128,19 @@ export default function WalkathonRegistration() {
             {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
           </div>
 
-          {/* Submit Button */}
+         
           <div>
             <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </div>
 
-          {/* Error Message */}
+         
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">{mutation.error.message}</p>
           )}
 
-          {/* Success Message */}
+          
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">Registration successful! 🎉</p>
           )}
