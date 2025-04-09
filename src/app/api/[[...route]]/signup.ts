@@ -14,8 +14,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "pathfinderoffical72@gmail.com",
-      pass: "wlau micc lpzi lsit",
+      user: "pathfinderofficalO@gmail.com",
+      pass: "edsr rxhu pjgd fidk",
     },
   }),
   nodemailer.createTransport({
@@ -24,7 +24,7 @@ const transporters = [
     secure: true,
     auth: {
       user: "Pathfinderoffical906@gmail.com",
-      pass: "mnbp xyxq nfmj urrw",
+      pass: "lgrb otpb wvot kafa",
     },
   }),
   nodemailer.createTransport({
@@ -33,7 +33,7 @@ const transporters = [
     secure: true,
     auth: {
       user: "pathfinderoffical8@gmail.com",
-      pass: "xecq lind kqfu qfbu",
+      pass: "edsr rxhu pjgd fidk",
     },
   }),
   nodemailer.createTransport({

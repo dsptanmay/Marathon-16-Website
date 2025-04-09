@@ -9,14 +9,39 @@ import { Button } from "@/components/ui/button";
 import { useRegisterWalkathon } from "@/hooks/use-register-user";
 import { useEffect } from "react";
 
+function isValidCode(code: string): boolean {
+  if (!/^\d{5}[A-Z]{1}$/.test(code)) return false;
+  const digits = code.slice(0, 5);
+  const letter = code.slice(5);
+  const sum = Array.from(digits).reduce(
+    (acc, digit) => acc + Number.parseInt(digit),
+    0
+  );
+  const remainder = sum % 26;
+  const expectedLetter = String.fromCharCode(65 + remainder);
+
+  return letter === expectedLetter;
+}
+
 const formSchema = z.object({
   name: z.string().min(3, "Name is required").nonempty("Name is required"),
-  phone_no: z.string().min(10, "Enter a valid phone number").nonempty("Phone number is required"),
+  phone_no: z
+    .string()
+    .min(10, "Phone number must be 10 digits")
+    .max(10, "Phone number must be 10 digits")
+    .refine((val) => /^\d{10}$/.test(val), {
+      message: "Phone number must contain only digits",
+    }),
   email: z.string().email("Invalid email"),
-  unique_code: z.string().nonempty("Unique Code is required"),
-  Gender: z.enum(["boy", "girl"], {
-    required_error: "Gender is required",
-  }),
+  unique_code: z
+    .string()
+    .min(6, "Unique code must be 6 characters")
+    .max(6, "Unique code must be 6 characters")
+    .refine((code) => isValidCode(code), {
+      message: "Invalid unique code format",
+    }),
+  usn: z.string().optional(),
+  Gender: z.enum(["boy", "girl"], { required_error: "Gender is required" }),
 });
 
 type FormData = z.infer<typeof formSchema>;
