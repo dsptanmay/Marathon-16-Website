@@ -76,19 +76,24 @@ const registerRouter = new Hono()
   .post("/girls", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
+    const usn = body.usn?.toUpperCase(); // Capitalize USN if provided
+    const isSitian = !!usn; // true if USN exists
+
     const res = await db
       .insert(masterTable)
       .values({
         unique_code: body.unique_code,
         name: body.name,
         phone_no: body.phone_no,
-        usn: body.usn,
+        usn,
         category: "girls",
         Gender: "girl",
+        isSitian,
       })
       .returning();
 
-    if (res.length === 0) return c.json({ error: "Error in registering user!" }, 400);
+    if (res.length === 0)
+      return c.json({ error: "Error in registering user!" }, 400);
 
     if (body.email) await sendEmail(body.email, body.unique_code);
 
@@ -97,24 +102,30 @@ const registerRouter = new Hono()
   .post("/boys", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
+    const usn = body.usn?.toUpperCase(); // Capitalize USN if provided
+    const isSitian = !!usn; // true if USN exists
+
     const res = await db
       .insert(masterTable)
       .values({
         unique_code: body.unique_code,
         name: body.name,
         phone_no: body.phone_no,
-        usn: body.usn,
+        usn,
         category: "boys",
         Gender: "boy",
+        isSitian,
       })
       .returning();
 
-    if (res.length === 0) return c.json({ error: "Error in registering user!" }, 400);
+    if (res.length === 0)
+      return c.json({ error: "Error in registering user!" }, 400);
 
     if (body.email) await sendEmail(body.email, body.unique_code);
 
     return c.json({ message: "User registered successfully" }, 201);
   })
+
   .post("/walkathon", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
