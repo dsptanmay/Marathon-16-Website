@@ -45,30 +45,48 @@ const getNextTransporter = () => {
   return transporter;
 };
 
-const sendEmail = async (to: string, uniqueCode: string) => {
+
+const sendEmail = async (to: string, uniqueCode: string): Promise<boolean> => {
   const transporter = getNextTransporter();
   const mailOptions = {
     from: '"Team PathFinder" <pathfinder@gmail.com>',
     to,
     subject: "Registration Successful",
-    text: `You have been successfully registered. Your unique code is: ${uniqueCode}`,
+    text: `Dear Participant,
+
+Thank you for registering for the PathFinder Marathon 2025. We are excited to have you as part of this special event.
+
+Your registration has been successfully received. Please find your unique participant code below:
+
+Unique Code: ${uniqueCode}
+
+Keep this code safe as it will be required for event verification and entry.
+
+If you have any questions or need further assistance, feel free to reach out to us at pathfinder@gmail.com.
+
+Best regards,  
+Team PathFinder
+`,
   };
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to}:`, info.response);
+    console.log(`✅ Email sent to ${to}:`, info.response);
+    return true;
   } catch (error) {
-    console.error(`Error sending email to ${to}:`, error);
+    console.error(`❌ Error sending email to ${to}:`, error);
+    return false;
   }
 };
 
-// Registration routes
+
 const registerRouter = new Hono()
+
+  // Girls registration
   .post("/girls", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
-
-    const usn = body.usn?.toUpperCase(); // Capitalize USN if provided
-    const isSitian = !!usn; // true if USN exists
+    const usn = body.usn?.toUpperCase();
+    const isSitian = !!usn;
 
     const res = await db
       .insert(masterTable)
@@ -86,15 +104,22 @@ const registerRouter = new Hono()
     if (res.length === 0)
       return c.json({ error: "Error in registering user!" }, 400);
 
-    if (body.email) await sendEmail(body.email, body.unique_code);
+    const emailSent = body.email ? await sendEmail(body.email, body.unique_code) : false;
 
-    return c.json({ message: "User registered successfully" }, 201);
+    return c.json(
+      {
+        message: "User registered successfully",
+        emailSent: body.email ? emailSent : "No email provided",
+      },
+      201
+    );
   })
+
+  // Boys registration
   .post("/boys", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
-
-    const usn = body.usn?.toUpperCase(); // Capitalize USN if provided
-    const isSitian = !!usn; // true if USN exists
+    const usn = body.usn?.toUpperCase();
+    const isSitian = !!usn;
 
     const res = await db
       .insert(masterTable)
@@ -112,15 +137,22 @@ const registerRouter = new Hono()
     if (res.length === 0)
       return c.json({ error: "Error in registering user!" }, 400);
 
-    if (body.email) await sendEmail(body.email, body.unique_code);
+    const emailSent = body.email ? await sendEmail(body.email, body.unique_code) : false;
 
-    return c.json({ message: "User registered successfully" }, 201);
+    return c.json(
+      {
+        message: "User registered successfully",
+        emailSent: body.email ? emailSent : "No email provided",
+      },
+      201
+    );
   })
+
+  // Walkathon registration
   .post("/walkathon", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
     const genderValue = body.Gender?.toLowerCase();
-
     const Gender = genderValue as "girl" | "boy";
     const category = Gender === "girl" ? "walkathon_f" : "walkathon_m";
 
@@ -136,13 +168,18 @@ const registerRouter = new Hono()
       })
       .returning();
 
-    if (res.length === 0) {
+    if (res.length === 0)
       return c.json({ error: "Error in registering user!" }, 400);
-    }
 
-    if (body.email) await sendEmail(body.email, body.unique_code);
+    const emailSent = body.email ? await sendEmail(body.email, body.unique_code) : false;
 
-    return c.json({ message: "User registered successfully" }, 201);
+    return c.json(
+      {
+        message: "User registered successfully",
+        emailSent: body.email ? emailSent : "No email provided",
+      },
+      201
+    );
   });
 
 export default registerRouter;
