@@ -5,8 +5,8 @@ import { createUserSchema } from "@/validations/masterSchema";
 import { zValidator } from "@hono/zod-validator";
 import nodemailer from "nodemailer";
 
-const validationMiddleware = zValidator("json", createUserSchema);
 
+const validationMiddleware = zValidator("json", createUserSchema);
 
 const transporters = [
   nodemailer.createTransport({
@@ -14,8 +14,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "pathfinderofficalO@gmail.com",
-      pass: "edsr rxhu pjgd fidk",
+      user: "contact.pathfindersit@gmail.com",
+      pass: "wwfz arcg ejmk joao",
     },
   }),
   nodemailer.createTransport({
@@ -23,17 +23,8 @@ const transporters = [
     port: 465,
     secure: true,
     auth: {
-      user: "Pathfinderoffical906@gmail.com",
-      pass: "lgrb otpb wvot kafa",
-    },
-  }),
-  nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "pathfinderoffical8@gmail.com",
-      pass: "edsr rxhu pjgd fidk",
+      user: "marathonpathfinder@gmail.com",
+      pass: "qgjq kqrj qsfj ogzb",
     },
   }),
   nodemailer.createTransport({
@@ -125,12 +116,10 @@ const registerRouter = new Hono()
 
     return c.json({ message: "User registered successfully" }, 201);
   })
-
   .post("/walkathon", validationMiddleware, async (c) => {
     const body = c.req.valid("json");
 
     const genderValue = body.Gender?.toLowerCase();
-
 
     const Gender = genderValue as "girl" | "boy";
     const category = Gender === "girl" ? "walkathon_f" : "walkathon_m";
@@ -154,7 +143,6 @@ const registerRouter = new Hono()
     if (body.email) await sendEmail(body.email, body.unique_code);
 
     return c.json({ message: "User registered successfully" }, 201);
-  })
-
+  });
 
 export default registerRouter;
