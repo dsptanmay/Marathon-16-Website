@@ -18,7 +18,6 @@ function isValidCode(code: string): boolean {
   );
   const remainder = sum % 26;
   const expectedLetter = String.fromCharCode(65 + remainder);
-
   return letter === expectedLetter;
 }
 
@@ -44,7 +43,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-
 export default function RegistrationForm() {
   const {
     register,
@@ -57,7 +55,6 @@ export default function RegistrationForm() {
 
   const mutation = useRegisterBoys();
 
- 
   useEffect(() => {
     if (mutation.isSuccess) {
       window.open("https://chat.whatsapp.com/GW4dbUiTxXxGvXJ2C3d6UK", "_blank");
@@ -84,7 +81,6 @@ export default function RegistrationForm() {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
           <div>
             <label className="block font-semibold mb-1">
               Name <span className="text-red-500">*</span>
@@ -95,7 +91,6 @@ export default function RegistrationForm() {
             )}
           </div>
 
-         
           <div>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
@@ -106,7 +101,6 @@ export default function RegistrationForm() {
             )}
           </div>
 
-          
           <div>
             <label className="block font-semibold mb-1">Email</label>
             <Input
@@ -119,38 +113,33 @@ export default function RegistrationForm() {
             )}
           </div>
 
-         
           <div>
             <label className="block font-semibold mb-1">
               Unique Code <span className="text-red-500">*</span>
             </label>
-            <Input placeholder="Ex: MARA123" {...register("unique_code")} />
+            <Input placeholder="Ex: 12345L" {...register("unique_code")} />
             {errors.unique_code && (
               <p className="text-red-500 text-sm">{errors.unique_code.message}</p>
             )}
           </div>
 
-         
           <div>
             <label className="block font-semibold mb-1">USN</label>
             <Input placeholder="Ex: 1SIXXYYXXX" {...register("usn")} />
           </div>
 
-       
           <div>
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </div>
 
-      
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">
               {mutation.error.message}
             </p>
           )}
 
-          
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">
               Registration successful! 🎉

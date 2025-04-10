@@ -18,7 +18,7 @@ function isValidCode(code: string): boolean {
     0
   );
   const remainder = sum % 26;
-  const expectedLetter = String.fromCharCode(65 + remainder);
+  const expectedLetter = String.fromCharCode(65 + remainder); // 65 = 'A'
 
   return letter === expectedLetter;
 }
@@ -58,7 +58,6 @@ export default function WalkathonRegistration() {
   });
 
   const mutation = useRegisterWalkathon();
-
 
   useEffect(() => {
     if (mutation.isSuccess) {
