@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "postinstall": "bun install"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
