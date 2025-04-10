@@ -1,10 +1,11 @@
-import type { Config } from "drizzle-kit";
+
 import * as dotenv from "dotenv";
+import type { Config } from "drizzle-kit";
 
 dotenv.config();
 
 if (!("DATABASE_URL" in process.env))
-  throw new Error("DATABASE URL not found in environment!");
+  throw new Error("DATABASE_URL not found in environment!");
 
 export default {
   schema: "./src/db/schema.ts",
@@ -14,3 +15,4 @@ export default {
     url: process.env.DATABASE_URL!,
   },
 } satisfies Config;
+

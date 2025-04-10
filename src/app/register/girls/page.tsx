@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRegisterGirls } from "@/hooks/use-register-user";
-
+import { useEffect } from "react";
 
 function isValidCode(code: string): boolean {
   if (!/^\d{5}[A-Z]{1}$/.test(code)) return false;
@@ -56,21 +56,32 @@ export default function GirlsRegistration() {
 
   const mutation = useRegisterGirls();
 
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      window.open("https://chat.whatsapp.com/GW4dbUiTxXxGvXJ2C3d6UK", "_blank");
+    }
+  }, [mutation.isSuccess]);
+
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data, {
+    const extendedData = {
+      ...data,
+      Gender: "girl" as const,
+      category: "girls" as const,
+    };
+
+    mutation.mutate(extendedData, {
       onSuccess: () => reset(),
     });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-pink-300 via-pink-500 to-pink-700">
-      <div className="bg-pink-200 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-pink-300 via-pink-500 to-pink-700 p-4">
+      <div className="bg-pink-100 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-pink-600 text-center">
           Girls Marathon Registration
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-         
           <div>
             <label className="block font-semibold mb-1">
               Name <span className="text-red-500">*</span>
@@ -81,21 +92,27 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-          
           <div>
             <label className="block font-semibold mb-1">
               Phone Number <span className="text-red-500">*</span>
             </label>
-            <Input type="tel" placeholder="Ex: 9876543210" {...register("phone_no")} />
+            <Input
+              type="tel"
+              placeholder="Ex: 9876543210"
+              {...register("phone_no")}
+            />
             {errors.phone_no && (
               <p className="text-red-500 text-sm">{errors.phone_no.message}</p>
             )}
           </div>
 
-         
           <div>
             <label className="block font-semibold mb-1">Email</label>
-            <Input type="email" placeholder="Ex: yourname@email.com" {...register("email")} />
+            <Input
+              type="email"
+              placeholder="Ex: yourname@email.com"
+              {...register("email")}
+            />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
@@ -111,27 +128,26 @@ export default function GirlsRegistration() {
             )}
           </div>
 
-         
           <div>
             <label className="block font-semibold mb-1">USN</label>
             <Input placeholder="Ex: 1SIXXYYXXX" {...register("usn")} />
           </div>
 
-          
           <div>
-            <Button type="submit" className="w-full bg-pink-600 hover:bg-pink-700">
+            <Button
+              type="submit"
+              className="w-full bg-pink-600 hover:bg-pink-700"
+            >
               {mutation.isPending ? "Registering..." : "Register"}
             </Button>
           </div>
 
-          
           {mutation.isError && (
             <p className="text-red-500 text-sm text-center mt-2">
               {mutation.error.message}
             </p>
           )}
 
-          
           {mutation.isSuccess && (
             <p className="text-green-500 text-sm text-center mt-2">
               Registration successful! 🎉

@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useAllWalkathon } from "@/hooks/get-Participant"; 
+import { useAllWalkathonParticipants } from "@/hooks/get-Participant";
 import React, { useState } from "react";
 import { PDFDocument, StandardFonts, PageSizes, rgb } from "pdf-lib";
 import { z } from "zod";
+
 
 const CrossDataSchema = z.object({
   id: z.string().uuid(),
@@ -12,8 +13,9 @@ const CrossDataSchema = z.object({
   name: z.string(),
   email: z.string().nullable(),
   phone_no: z.string(),
-  usn: z.string().nullable(),
-  category: z.enum(["girls", "boys", "walkathon"]),
+  usn: z.string().nullable(), 
+  Gender: z.enum(["boy", "girl"]),
+  category: z.enum(["girls", "boys", "walkathon_f", "walkathon_m"]),
   isCrossed: z.boolean(),
   crossTime: z.string().nullable(),
   isSitian: z.boolean().nullable(),
@@ -23,11 +25,10 @@ type CrossData = z.infer<typeof CrossDataSchema>;
 
 const AllWalkathonParticipants: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { data: participants, isLoading, error } = useAllWalkathon();
+  const { data: participants, isLoading, error } = useAllWalkathonParticipants();
 
-  const validatedParticipants = participants?.filter((p) =>
-    CrossDataSchema.safeParse(p).success
-  ) ?? [];
+  const validatedParticipants: CrossData[] =
+    participants?.filter((p): p is CrossData => CrossDataSchema.safeParse(p).success) ?? [];
 
   async function generatePdf(data: CrossData[], title?: string) {
     const pdfDoc = await PDFDocument.create();
@@ -41,7 +42,7 @@ const AllWalkathonParticipants: React.FC = () => {
 
     let y = height - margin * 2;
     page.setFont(helveticaBoldFont);
-    page.drawText(title || "All Participants - Walkathon", {
+    page.drawText(title || "All Walkathon Participants", {
       x: margin,
       y,
       color: rgb(0, 0, 0),
@@ -55,16 +56,17 @@ const AllWalkathonParticipants: React.FC = () => {
         ? new Date(participant.crossTime).toLocaleString()
         : "N/A";
       const phoneNumber = participant.phone_no || "No Phone";
-      const usn = participant.usn ? `USN: ${participant.usn}` : "USN: N/A";
+      const gender = participant.Gender ?? "N/A";
 
-      page.drawText(`${idx + 1}. ${participant.name} - ${formattedTime}`, {
+      page.drawText(`${idx + 1}. ${participant.name} (${gender}) - ${formattedTime}`, {
         x: margin,
         y,
         size: fontSize,
         color: rgb(0, 0, 0),
       });
       y -= 20;
-      page.drawText(`   Phone: ${phoneNumber} | ${usn}`, {
+
+      page.drawText(`   Phone: ${phoneNumber}`, {
         x: margin,
         y,
         size: fontSize,
@@ -78,8 +80,9 @@ const AllWalkathonParticipants: React.FC = () => {
 
   const handleDownload = async () => {
     if (!validatedParticipants.length) return;
+
     setLoading(true);
-    const pdfBytes = await generatePdf(validatedParticipants, "All Participants - Walkathon");
+    const pdfBytes = await generatePdf(validatedParticipants, "All Walkathon Participants");
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
 
     const url = window.URL.createObjectURL(blob);
@@ -88,13 +91,14 @@ const AllWalkathonParticipants: React.FC = () => {
     a.download = "AllParticipants-Walkathon.pdf";
     a.click();
     window.URL.revokeObjectURL(url);
+
     setLoading(false);
   };
 
   return (
     <div className="bg-gray-50 rounded-md shadow-md m-3 sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-1/3 mx-auto p-4 flex flex-col">
       <h1 className="text-xl font-bold mb-4 text-center">
-        All Participants - Walkathon
+        All Walkathon Participants
       </h1>
 
       {isLoading ? (

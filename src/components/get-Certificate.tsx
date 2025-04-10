@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { AlertDescription } from "@/components/ui/alert";
@@ -8,33 +9,40 @@ import { useState } from "react";
 import { useUserInfo } from "@/hooks/get-user";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
+
+function isValidCode(code: string): boolean {
+  if (!/^\d{5}[A-Z]{1}$/.test(code)) return false;
+
+  const digits = code.slice(0, 5);
+  const letter = code.slice(5);
+  const sum = Array.from(digits).reduce(
+    (acc, digit) => acc + Number.parseInt(digit),
+    0
+  );
+  const remainder = sum % 26;
+  const expectedLetter = String.fromCharCode(65 + remainder); // 'A' = 65
+
+  return letter === expectedLetter;
+}
+
 export default function CodeValidator() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-  const [isValidCode, setIsValidCode] = useState(true);
+  const [isValidCodeState, setIsValidCodeState] = useState(true);
 
   const { data: user, isLoading: isQueryLoading, isError, error: queryError } = useUserInfo(code);
-
-  const validateCode = (input: string) => {
-    const regex = /^[0-9]{5}[A-Z]$/;
-    return regex.test(input);
-  };
-
-
-
-
 
   const generateCertificatePDF = async (participantName: string): Promise<Uint8Array | null> => {
     try {
       const pdfDoc = await PDFDocument.create();
-      const pageWidth = 842; // A4 width in points (landscape)
-      const pageHeight = 595; // A4 height in points (landscape)
+      const pageWidth = 842;
+      const pageHeight = 595;
       const page = pdfDoc.addPage([pageWidth, pageHeight]);
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      const imageUrl = "https://i.imgur.com/BtPP8WS.png";
+      const imageUrl = "https://i.imgur.com/T7AMnkD.png";
       const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
       const backgroundImage = await pdfDoc.embedPng(imageBytes);
 
@@ -48,34 +56,12 @@ export default function CodeValidator() {
       const nameSize = 28;
       const nameTextWidth = font.widthOfTextAtSize(participantName, nameSize);
       const nameX = (pageWidth - nameTextWidth) / 2;
-      const nameY = pageHeight / 2 + 60;
+      const nameY = pageHeight / 2 + 10;
 
       page.drawText(participantName, {
         x: nameX,
         y: nameY,
         size: nameSize,
-        font,
-        color: rgb(0, 0, 0),
-      });
-
-      const today = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      page.drawText(`Date: ${today}`, {
-        x: pageWidth - 170,
-        y: 120,
-        size: 14,
-        font,
-        color: rgb(0, 0, 0),
-      });
-
-      page.drawText("Team Pathfinder", {
-        x: pageWidth - 170,
-        y: 105,
-        size: 14,
         font,
         color: rgb(0, 0, 0),
       });
@@ -87,22 +73,20 @@ export default function CodeValidator() {
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess(false);
     setIsValidating(true);
 
-
-    if (!validateCode(code)) {
-      setError("Invalid Code! It must be 5 digits followed by 1 uppercase letter (e.g., 12345A).");
-      setIsValidCode(false);
+    if (!isValidCode(code)) {
+      setError("Invalid Code! It must be 5 digits followed by 1 uppercase letter based on a checksum (e.g., 12345O).");
+      setIsValidCodeState(false);
       setIsValidating(false);
       return;
     }
 
-    setIsValidCode(true);
+    setIsValidCodeState(true);
 
     if (isQueryLoading) return;
 
@@ -114,6 +98,12 @@ export default function CodeValidator() {
 
     if (!user) {
       setError("Failed to retrieve user information. Please try again.");
+      setIsValidating(false);
+      return;
+    }
+
+    if (!user.isCrossed) {
+      setError("You are not eligible for a certificate yet.");
       setIsValidating(false);
       return;
     }
@@ -160,7 +150,7 @@ export default function CodeValidator() {
               placeholder="Enter code (e.g., 12345A)"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              className={`text-center text-xl tracking-widest h-14 border ${isValidCode ? "border-blue-300" : "border-red-500"} focus-visible:ring-blue-500`}
+              className={`text-center text-xl tracking-widest h-14 border ${isValidCodeState ? "border-blue-300" : "border-red-500"} focus-visible:ring-blue-500`}
               maxLength={6}
             />
 

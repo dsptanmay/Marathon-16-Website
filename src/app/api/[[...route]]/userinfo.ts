@@ -21,7 +21,7 @@ const userRouter = new Hono().get(
     const { unique_code } = c.req.valid("query");
 
     try {
-      /**const user = await db
+    /**   const user = await db
         .select()
         .from(masterTable)
         .where(
@@ -30,10 +30,10 @@ const userRouter = new Hono().get(
             eq(masterTable.isCrossed, true)
           )
         );**/
-      const user = await db
-     .select()
-     .from(masterTable)
-     .where(eq(masterTable.unique_code, unique_code)) 
+        const user = await db
+      .select({isCrossed:masterTable.isCrossed,name:masterTable.name})
+      .from(masterTable)
+      .where(eq(masterTable.unique_code, unique_code)) 
 
 
 

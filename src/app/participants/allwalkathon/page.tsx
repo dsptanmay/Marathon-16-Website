@@ -1,6 +1,6 @@
 import AllWalkathonParticipants from "@/components/allWalkathon";
 
-export default function AllBoysPage() {
+export default function AllWalkathonPage() {
   return (
     <div>
       <AllWalkathonParticipants />

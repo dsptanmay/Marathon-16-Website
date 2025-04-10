@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useAllGirls } from "@/hooks/get-Participant"; 
+import { useAllGirls } from "@/hooks/get-Participant";
 import React, { useState } from "react";
 import { PDFDocument, StandardFonts, PageSizes, rgb } from "pdf-lib";
 import { z } from "zod";
+
 
 const CrossDataSchema = z.object({
   id: z.string().uuid(),
@@ -13,7 +14,8 @@ const CrossDataSchema = z.object({
   email: z.string().nullable(),
   phone_no: z.string(),
   usn: z.string().nullable(),
-  category: z.enum(["girls", "boys", "walkathon"]),
+  Gender: z.enum(["boy", "girl"]), 
+  category: z.enum(["girls", "boys", "walkathon_f", "walkathon_m"]),
   isCrossed: z.boolean(),
   crossTime: z.string().nullable(),
   isSitian: z.boolean().nullable(),
@@ -25,9 +27,9 @@ const AllGirlsParticipants: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { data: participants, isLoading, error } = useAllGirls();
 
-  const validatedParticipants = participants?.filter((p) =>
-    CrossDataSchema.safeParse(p).success
-  ) ?? [];
+
+  const validatedParticipants: CrossData[] =
+    participants?.filter((p): p is CrossData => CrossDataSchema.safeParse(p).success) ?? [];
 
   async function generatePdf(data: CrossData[], title?: string) {
     const pdfDoc = await PDFDocument.create();
@@ -64,6 +66,7 @@ const AllGirlsParticipants: React.FC = () => {
         color: rgb(0, 0, 0),
       });
       y -= 20;
+
       page.drawText(`   Phone: ${phoneNumber} | ${usn}`, {
         x: margin,
         y,
@@ -88,6 +91,7 @@ const AllGirlsParticipants: React.FC = () => {
     a.download = "AllParticipants-Girls.pdf";
     a.click();
     window.URL.revokeObjectURL(url);
+
     setLoading(false);
   };
 
