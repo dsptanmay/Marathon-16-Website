@@ -5,7 +5,6 @@ import { createUserSchema } from "@/validations/masterSchema";
 import { zValidator } from "@hono/zod-validator";
 import nodemailer from "nodemailer";
 
-
 const validationMiddleware = zValidator("json", createUserSchema);
 
 const transporters = [
@@ -45,7 +44,6 @@ const getNextTransporter = () => {
   return transporter;
 };
 
-
 const sendEmail = async (to: string, uniqueCode: string): Promise<boolean> => {
   const transporter = getNextTransporter();
   const mailOptions = {
@@ -78,7 +76,6 @@ Team PathFinder
     return false;
   }
 };
-
 
 const registerRouter = new Hono()
 
