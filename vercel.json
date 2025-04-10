@@ -1,0 +1,19 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/node"
+      }
+    ],
+    "buildCommand": "bun run build",
+    "installCommand": "bun install",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "env": {
+      "SUPABASE_URL": "https://ezavqbzfjvfzaozqxbif.supabase.co",
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6YXZxYnpmanZmemFvenF4YmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNjU0MDQsImV4cCI6MjA1OTg0MTQwNH0.1O4Giw7FjoyiMIot1M9ostagB13oH_4rQ-VRk8MPSCY",
+      "DATABASE_URL": "postgresql://pathfinder_owner:npg_Na3sAdlF7HYQ@ep-polished-grass-a5ezzw8d-pooler.us-east-2.aws.neon.tech/pathfinder?sslmode=require"
+    }
+  }
+  
